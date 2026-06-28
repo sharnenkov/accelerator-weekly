@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Акселератор инноваций · ЦИР</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Акселератор инноваций · Неделя 26">
+<meta property="og:description" content="28 пилотов в работе · 5 инноваций в проработке · Еженедельный отчёт ЦИР">
+<meta property="og:url" content="https://accelerator-weekly.vercel.app">
+<meta property="og:image" content="https://accelerator-weekly.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Акселератор инноваций ЦИР">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Акселератор инноваций · Неделя 26">
+<meta name="twitter:description" content="28 пилотов в работе · 5 инноваций в проработке · Еженедельный отчёт ЦИР">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --canvas: #07070a;
+  --surf: rgba(255,255,255,0.033);
+  --border: rgba(255,255,255,0.07);
+  --text: #f0ede8;
+  --muted: rgba(240,237,232,0.38);
+  --dim: rgba(240,237,232,0.18);
+  --blue:   #2db8f5;
+  --green:  #0ae448;
+  --gold:   #f5c842;
+  --brown:  #c47d3e;
+  --violet: #a78bfa;
+}
+html { overflow-x: clip; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--canvas);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+#amb {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  transition: background 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+.page { position: relative; max-width: 480px; margin: 0 auto; padding: 0 16px 120px; }
+
+/* ── Header ── */
+.stickyH {
+  position: sticky; top: 0; z-index: 20;
+  padding: 8px 16px 0; margin: 0 -16px;
+}
+.stickyH-inner {
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  background: rgba(18,18,24,0.72);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
+  padding: 13px 16px 13px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.35), 0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+.hRow { display:flex; justify-content:space-between; align-items:center; }
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-icon {
+  width:30px; height:30px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center; font-size:15px;
+  transition: background 1s, box-shadow 1s;
+}
+.brand-name { font-size:15px; font-weight:700; letter-spacing:-0.03em; color:#fff; }
+.brand-sub  { font-size:10px; color:var(--muted); letter-spacing:0.02em; margin-top:1px; }
+.wtag {
+  font-size:10px; padding:3px 11px; border-radius:100px;
+  border:1px solid var(--border); color:var(--muted);
+  transition: border-color 1s, color 1s; letter-spacing:0.03em; white-space:nowrap;
+}
+.navRow { display:flex; gap:6px; margin-top:11px; overflow-x:auto; scrollbar-width:none; }
+.navRow::-webkit-scrollbar { display:none; }
+.npill {
+  display:flex; align-items:center; gap:5px;
+  padding:5px 11px 5px 8px; border-radius:100px;
+  border:1px solid var(--border); background:transparent;
+  cursor:pointer; white-space:nowrap; user-select:none;
+  transition: border-color .5s, background .5s;
+}
+.npill.on { border-color:transparent; }
+.npill-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.npill-lbl { font-size:10px; font-weight:600; letter-spacing:0.03em; color:var(--muted); transition:color .5s; }
+.npill.on .npill-lbl { color:rgba(0,0,0,0.78); }
+
+/* ── Sections ── */
+.sec { padding-top:32px; }
+.sec+.sec { margin-top:8px; padding-top:36px; border-top:1px solid rgba(255,255,255,0.05); }
+.eyebrow {
+  display:flex; align-items:center; gap:7px;
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--muted); margin-bottom:8px; transition:color .8s;
+}
+.eye-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; transition:background .8s, box-shadow .8s, opacity .8s; }
+.sec-title {
+  font-size:28px; font-weight:800; letter-spacing:-0.04em; line-height:1.08;
+  color:#fff; margin-bottom:20px;
+}
+.sec-title em { font-style:normal; transition:color .8s; }
+
+/* ── 2-col stat strip ── */
+.stat2 { display:grid; grid-template-columns:1fr 1.35fr; gap:8px; margin-bottom:20px; }
+.stat2-card {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:16px 14px; transition:border-color 1s, box-shadow 1s;
+}
+.stat2-n { font-size:36px; font-weight:800; color:#fff; line-height:1; }
+.stat2-l { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.3; }
+
+/* ── Innovation card (Поиск) ── */
+.icard {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:16px; margin-bottom:10px; transition:border-color .7s, box-shadow .7s;
+}
+.icard:last-child { margin-bottom:0; }
+.icard-name { font-size:17px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:6px; }
+.icard-desc { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:14px; }
+.icard-divider { height:1px; background:rgba(255,255,255,0.06); margin-bottom:12px; }
+.icard-row { display:flex; flex-direction:column; gap:10px; }
+.icard-field {}
+.icard-label {
+  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--dim); margin-bottom:3px;
+}
+.icard-val { font-size:13px; color:rgba(255,255,255,0.75); line-height:1.4; }
+.icard-artifact {
+  margin-top:12px; padding:10px 12px;
+  background:rgba(255,255,255,0.04); border-radius:10px;
+  border:1px solid rgba(255,255,255,0.07);
+}
+.icard-artifact .icard-label { color:var(--muted); }
+.icard-artifact .icard-val { font-size:12px; color:rgba(255,255,255,0.6); }
+
+/* ── Funnel ── */
+.funnel {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:16px 17px; margin-bottom:20px; transition:border-color 1s;
+}
+.funnel-ttl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:14px; }
+.frow { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.frow:last-child { margin-bottom:0; }
+.flbl { font-size:11px; color:var(--muted); width:108px; flex-shrink:0; line-height:1.2; }
+.ftrack { flex:1; height:18px; background:rgba(255,255,255,0.04); border-radius:5px; overflow:hidden; }
+.fbar { height:100%; border-radius:5px; font-size:10px; font-weight:800; display:flex; align-items:center; padding-left:8px; color:rgba(0,0,0,0.65); }
+.fd { font-size:10px; width:20px; text-align:right; flex-shrink:0; font-weight:700; }
+
+/* ── Filter tabs (2 штуки) ── */
+.tabs2 { display:flex; gap:8px; margin-bottom:16px; }
+.tab2 {
+  flex:1; padding:10px 12px; border-radius:12px; font-size:13px; font-weight:700;
+  cursor:pointer; border:1px solid var(--border);
+  background:transparent; color:var(--muted); transition:all .2s;
+  text-align:center; user-select:none; letter-spacing:-0.01em;
+}
+.tab2.on { color:#000; border-color:transparent; }
+
+/* ── Pilot card ── */
+.pcard {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:16px; margin-bottom:10px; transition:border-color .7s, box-shadow .7s;
+}
+.pcard:last-child { margin-bottom:0; }
+.pcard-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.pcard-name { font-size:17px; font-weight:700; color:#fff; line-height:1.2; }
+.badge {
+  font-size:9px; font-weight:700; padding:3px 9px; border-radius:100px;
+  border:1px solid transparent; white-space:nowrap; letter-spacing:.03em; flex-shrink:0;
+  margin-top:3px;
+}
+.pcard-divider { height:1px; background:rgba(255,255,255,0.06); margin:12px 0; }
+.pcard-field { margin-bottom:10px; }
+.pcard-field:last-child { margin-bottom:0; }
+.pcard-label {
+  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--dim); margin-bottom:3px;
+}
+.pcard-val { font-size:13px; color:rgba(255,255,255,0.75); line-height:1.45; }
+.pcard-result {
+  padding:10px 12px;
+  background:rgba(255,255,255,0.04); border-radius:10px;
+  border:1px solid rgba(255,255,255,0.07);
+}
+.pcard-result .pcard-label { color:var(--muted); }
+.pcard-result .pcard-val { font-size:12px; color:rgba(255,255,255,0.6); }
+
+/* ── Generic dirs 2-col ── */
+.dirs { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:20px; }
+.dir {
+  background:var(--surf); border:1px solid var(--border); border-radius:14px;
+  padding:15px 15px 13px; transition:border-color 1s, box-shadow 1s;
+}
+.dir-ico { font-size:20px; margin-bottom:9px; }
+.dir-l { font-size:11px; color:var(--muted); margin-bottom:3px; line-height:1.3; }
+.dir-n { font-size:26px; font-weight:800; color:#fff; line-height:1; }
+.dir-s { font-size:10px; color:var(--dim); margin-top:3px; }
+
+/* ── Feed ── */
+.feed { display:flex; flex-direction:column; gap:8px; }
+.fi {
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--surf); border:1px solid var(--border);
+  border-radius:13px; padding:13px 14px;
+}
+.fi-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.fi-t { font-size:13px; color:rgba(255,255,255,0.75); line-height:1.45; }
+.fi-d { font-size:11px; color:var(--muted); margin-top:3px; }
+
+/* ── Infra ── */
+.infra-list { display:flex; flex-direction:column; gap:9px; }
+.infra-item {
+  background:var(--surf); border:1px solid var(--border); border-radius:14px;
+  padding:14px 16px; display:flex; gap:14px; align-items:flex-start;
+  transition:border-color .7s, box-shadow .7s;
+}
+.infra-ico { font-size:22px; flex-shrink:0; margin-top:1px; }
+.infra-name { font-size:15px; font-weight:700; color:#fff; margin-bottom:5px; }
+.infra-desc { font-size:12px; color:var(--muted); line-height:1.45; margin-bottom:8px; }
+.status-row { display:flex; align-items:center; gap:9px; }
+.schip { font-size:10px; font-weight:700; padding:3px 10px; border-radius:100px; border:1px solid transparent; letter-spacing:.03em; }
+
+#topfade {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 15; pointer-events: none;
+  height: 140px;
+  background: linear-gradient(to bottom, #07070a 40%, transparent 100%);
+}
+.foot { text-align:center; font-size:11px; color:rgba(255,255,255,0.18); margin-top:44px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.05); letter-spacing:.04em; line-height:1.8; }
+</style>
+</head>
+<body>
+<div id="amb"></div>
+<div id="topfade"></div>
+<div class="page">
+
+<!-- HEADER -->
+<div class="stickyH">
+  <div class="stickyH-inner">
+    <div class="hRow">
+      <div class="brand">
+        <div class="brand-icon" id="bico">🚀</div>
+        <div>
+          <div class="brand-name">Акселератор инноваций</div>
+          <div class="brand-sub">ЦИР · Еженедельный отчёт</div>
+        </div>
+      </div>
+      <div class="wtag" id="wtag">Нед. 26 · июнь 2026</div>
+    </div>
+    <div class="navRow">
+      <div class="npill" id="np0" onclick="jumpTo(0)"><div class="npill-dot" style="background:var(--blue)"></div><span class="npill-lbl">Поиск</span></div>
+      <div class="npill" id="np1" onclick="jumpTo(1)"><div class="npill-dot" style="background:var(--green)"></div><span class="npill-lbl">Конвейер</span></div>
+      <div class="npill" id="np2" onclick="jumpTo(2)"><div class="npill-dot" style="background:var(--gold)"></div><span class="npill-lbl">Инфра</span></div>
+      <div class="npill" id="np3" onclick="jumpTo(3)"><div class="npill-dot" style="background:var(--brown)"></div><span class="npill-lbl">ВНД</span></div>
+      <div class="npill" id="np4" onclick="jumpTo(4)"><div class="npill-dot" style="background:var(--violet)"></div><span class="npill-lbl">PR</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S0: ПОИСК ИННОВАЦИЙ ══ -->
+<div class="sec" id="s0">
+  <div class="eyebrow"><div class="eye-dot" id="ed0"></div><span id="ey0">Поиск инноваций · Насмотренность</span></div>
+  <div class="sec-title"><em id="em0">5 решений</em> в проработке</div>
+
+  <div class="stat2">
+    <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1;color:var(--blue)">5</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">инноваций<br>на неделе</div>
+    </div>
+    <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1">160</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">инновационных<br>решений в базе</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="0">
+    <div class="icard-name">WhoAI</div>
+    <div class="icard-desc">ИИ-платформа для автоматизации HR-интервью: проводит собеседования 24/7, оценивает hard/soft skills кандидатов</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Проведена установочная встреча с командой Акселератора</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Оценка заказчиков интереса в пилотировании</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="0">
+    <div class="icard-name">VeAI</div>
+    <div class="icard-desc">ИИ-ассистент для разработчиков в JetBrains: генерация кода, тестирование и отладка в агентном режиме</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Проведена установочная встреча с командой Акселератора и Заказчиком</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Оценка заказчиков интереса в пилотировании</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="0">
+    <div class="icard-name">notCard · Финалист конкурса стартапов</div>
+    <div class="icard-desc">Цифровая визитка с NFC для обмена контактами, сбора лидов и аналитики встреч</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Запланированы установочные встречи с заказчиками</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Анкета на пилот, сценарий, критерии успешности</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="0">
+    <div class="icard-name">UNADESK · Финалист конкурса стартапов</div>
+    <div class="icard-desc">Платформа для автоматической генерации курсов, инструкций и тренажёров из документации</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Запланированы установочные встречи с заказчиками</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Анкета на пилот, сценарий, критерии успешности</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="0">
+    <div class="icard-name">Parsewise · Финалист конкурса стартапов</div>
+    <div class="icard-desc">ИИ чат-виджет для продаж: встраивается на сайт, ведёт диалог с клиентом и помогает с поиском товаров</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Запланированы установочные встречи с заказчиками</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Анкета на пилот, сценарий, критерии успешности</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S1: КОНВЕЙЕР ПИЛОТОВ ══ -->
+<div class="sec" id="s1">
+  <div class="eyebrow"><div class="eye-dot" id="ed1"></div><span id="ey1">Конвейер пилотных проектов</span></div>
+  <div class="sec-title"><em id="em1">28 пилотов</em> в работе</div>
+
+  <div class="funnel" data-s="1">
+    <div class="funnel-ttl">Конвейер пилотов</div>
+    <div class="frow"><span class="flbl">Вход в конвейер</span><div class="ftrack"><div class="fbar" style="width:14%;background:rgba(255,255,255,0.2)">4</div></div><span class="fd" style="color:var(--muted)">4</span></div>
+    <div class="frow"><span class="flbl">Ожидание</span><div class="ftrack"><div class="fbar" style="width:11%;background:rgba(255,255,255,0.15)">3</div></div><span class="fd" style="color:var(--muted)">3</span></div>
+    <div class="frow"><span class="flbl">Комплектация</span><div class="ftrack"><div class="fbar" style="width:57%;background:var(--blue)">16</div></div><span class="fd" style="color:var(--blue)">16</span></div>
+    <div class="frow"><span class="flbl">Тестирование</span><div class="ftrack"><div class="fbar" style="width:11%;background:var(--green)">3</div></div><span class="fd" style="color:var(--green)">3</span></div>
+    <div class="frow"><span class="flbl">Завершение</span><div class="ftrack"><div class="fbar" style="width:7%;background:#fec5fb">2</div></div><span class="fd" style="color:var(--muted)">2</span></div>
+  </div>
+
+  <div class="tabs2">
+    <button class="tab2 on" id="tab-active" onclick="filterPilots('active',this)">Активная работа · 15</button>
+    <button class="tab2" id="tab-control" onclick="filterPilots('control',this)">Контроль · 13</button>
+  </div>
+
+  <div id="pilotsList">
+
+    <!-- АКТИВНЫЕ -->
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.01 · Агент по обработке предложений в Банк идей (ОКФ)</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена регулярная встреча, внесены изменения в план-график</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Обновлен план-график, финализировано БТ</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="green">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.03 · Ассистент по поиску информации в Базе знаний</span>
+        <span class="badge" style="background:rgba(10,228,72,.1);color:var(--green);border-color:rgba(10,228,72,.2)">Тестирование</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена рабочая встреча с Заказчиком для определения новых сроков пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">План-график работ на уточнении — заказчик работает медленно</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.05 · Агент для разработки стратегии принятия решений по новым продуктам</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведено DEMO подготовленного вендором прототипа</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">План-график работ — разработка</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.06 · Ассистент по работе с программным кодом скриптов</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена трёхсторонняя встреча для определения условий проведения пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">План-график работ — разработка</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.07 · Робот-коллектор для звонков проблемным клиентам</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проработка с заказчиком методов устранения риска использования ПДн клиентов для пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Обновлённый сценарий пилота, метод передачи данных</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.09 · Агент для сбора информации по банкротным делам ФЛ</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проработка с заказчиком методов устранения риска использования ПДн клиентов для пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Обновлённый сценарий пилота, метод передачи данных</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.11 · Агент для поиска концентраций рисков в новых выдачах / портфеле</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена трёхсторонняя встреча для проработки сценария упрощённого пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Подготовленные ответы на вопросы от вендора — в работе</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="green">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.12 · Агент для анализа воронок одобрения по продуктам</span>
+        <span class="badge" style="background:rgba(10,228,72,.1);color:var(--green);border-color:rgba(10,228,72,.2)">Тестирование</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведён воркшоп 26 июня, переданы данные для тестирования</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Отчёт по результатам тестирования — в работе</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.13 · Чат-боты и умные помощники для внешнего карьерного сайта</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена трёхсторонняя встреча для определения условий проведения пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Согласованные условия проведения пилота в облаке (грант)</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="blue">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.17 · ИИ-ассистент для автоматизации поиска и анализа судебной практики</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена трёхсторонняя встреча для определения условий проведения пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Программа проведения пилотного проекта — в работе</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="pink">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.20 · Интеграция СЭД «ТЕЗИС» с технологиями ИИ</span>
+        <span class="badge" style="background:rgba(254,197,251,.08);color:#fec5fb;border-color:rgba(254,197,251,.2)">Завершение</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Подготовка материала для публикации в сообществе ЦИР, подготовка к тестированию LLM МТС</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Драфт статьи в сообществе ЦИР</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.21 · Агент для анализа выписок по расчётным счетам ЮЛ</span>
+        <span class="badge" style="background:rgba(245,200,66,.08);color:var(--gold);border-color:rgba(245,200,66,.2)">Ожидание</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Проведена рабочая встреча для определения шагов по подготовке материалов для пилота</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Анкета, сценарий пилота, критерии успешности — в работе</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.26 · notCard — Финалист конкурса стартапов</span>
+        <span class="badge" style="background:rgba(255,255,255,.05);color:var(--muted);border-color:rgba(255,255,255,.1)">Вход в конвейер</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Отправили анкету Заказчику, запланировали установочную встречу</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Карточка решения в Базе инновационных решений</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.27 · UNADESK — Финалист конкурса стартапов</span>
+        <span class="badge" style="background:rgba(255,255,255,.05);color:var(--muted);border-color:rgba(255,255,255,.1)">Вход в конвейер</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Отправили анкету Заказчику, запланировали установочную встречу</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Карточка решения в Базе инновационных решений</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="active" data-glow="">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.28 · Parsevise — Финалист конкурса стартапов</span>
+        <span class="badge" style="background:rgba(255,255,255,.05);color:var(--muted);border-color:rgba(255,255,255,.1)">Вход в конвейер</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-field">
+        <div class="pcard-label">Что сделано на неделе</div>
+        <div class="pcard-val">Отправили анкету Заказчику, запланировали установочную встречу</div>
+      </div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Карточка решения в Базе инновационных решений</div>
+      </div>
+    </div>
+
+    <!-- КОНТРОЛЬ -->
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.02 · Помощник-стажёр для сотрудников СВА</span>
+        <span class="badge" style="background:rgba(254,197,251,.08);color:#fec5fb;border-color:rgba(254,197,251,.2)">Завершение</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Отчёт по результатам пилота (финализация)</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.04 · Ассистент по поиску информации в файлах</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">План-график работ — разработка</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.08 · Агент для анализа диалогов с проблемными клиентами</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Контроль готовности 300 транскрибов записей звонков</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.10 · Ассистент по созданию презентаций</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">БТ подготовлено и отправлено вендору для работы</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.14 · Ассистент по онлайн-консультированию по вопросам залогового обеспечения</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">БТ для прикрепления к Заказу в СГ (работы интегратора)</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.15 · Помощник-эксперт для сотрудников СВА</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">БТ для прикрепления к Заказу в СГ (работы интегратора)</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.16 · ИИ-ассистент операционной поддержки по типовым вопросам от розничных клиентов</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">КП от вендора на проведение пилотного проекта — в работе</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.18 · Пилот с департаментом казначейства</span>
+        <span class="badge" style="background:rgba(255,255,255,.05);color:var(--muted);border-color:rgba(255,255,255,.1)">Вход в конвейер</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Подтверждение от руководства Заказчика на старт пилотного проекта</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.19 · Ассистент по продажам зарплатным клиентам (Selvery)</span>
+        <span class="badge" style="background:rgba(10,228,72,.1);color:var(--green);border-color:rgba(10,228,72,.2)">Тестирование</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Отчёт по результатам тестирования</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.22 · Создание пространства для работы ЦИР (HOLST)</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Подготовка программы проведения пилотного проекта</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.23 · Создание единого инструмента для работы АИ с заказчиками (К2)</span>
+        <span class="badge" style="background:rgba(45,184,245,.08);color:var(--blue);border-color:rgba(45,184,245,.2)">Комплектация</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Комплектация требований к целевому решению</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.24 · Ассистент по поиску ответов на вопросы клиентов МСП в базе знаний Naumen</span>
+        <span class="badge" style="background:rgba(245,200,66,.08);color:var(--gold);border-color:rgba(245,200,66,.2)">Ожидание</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">Проработка сценария пилотного проекта</div>
+      </div>
+    </div>
+
+    <div class="pcard" data-pw="control" style="display:none">
+      <div class="pcard-top">
+        <span class="pcard-name">АИ.П26.25 · ИИ-агент по регистрации претензионных обращений</span>
+        <span class="badge" style="background:rgba(245,200,66,.08);color:var(--gold);border-color:rgba(245,200,66,.2)">Ожидание</span>
+      </div>
+      <div class="pcard-divider"></div>
+      <div class="pcard-result">
+        <div class="pcard-label">Артефакт</div>
+        <div class="pcard-val">КП от вендора на проведение пилотного проекта — в работе</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ S2: ИНФРАСТРУКТУРА ══ -->
+<div class="sec" id="s2">
+  <div class="eyebrow"><div class="eye-dot" id="ed2"></div><span id="ey2">Инфраструктура · Песочница ЦИР</span></div>
+  <div class="sec-title"><em id="em2">Обогащение</em> песочницы ЦИР</div>
+
+  <div class="icard" data-s="2">
+    <div class="icard-name">Настройка LLM от MWS AI для проведения пилотных проектов в контуре Банка</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--gold);flex-shrink:0;margin-top:1px">1.</span><span>Проведена встреча с интегратором и вендором для определения формата дальнейших работ</span></div>
+            <div style="display:flex;gap:8px;align-items:flex-start"><span style="color:var(--gold);flex-shrink:0;margin-top:1px">2.</span><span>Проведена внутренняя встреча ЦИР (АИ+ТРП) для обсуждения очерёдности проведения пилотных проектов</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакты</div>
+      <div class="icard-val" style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+        <div style="display:flex;gap:7px;align-items:flex-start"><span style="color:var(--gold);flex-shrink:0">·</span><span>Обновлённый формат заказа в СГ (ориентирован на пилоты) — в работе (БТ на три пилота)</span></div>
+        <div style="display:flex;gap:7px;align-items:flex-start"><span style="color:var(--gold);flex-shrink:0">·</span><span>Перечень пилотов для проведения в контуре банка с ранжированием по очерёдности</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3: МЕТОДОЛОГИЯ ══ -->
+<div class="sec" id="s3">
+  <div class="eyebrow"><div class="eye-dot" id="ed3"></div><span id="ey3">Методология Акселератора</span></div>
+  <div class="sec-title"><em id="em3">ВНД</em> · Порядок работы Акселератора инноваций</div>
+
+  <div class="icard" data-s="3">
+    <div class="icard-name" style="color:var(--muted)">Нет новых данных</div>
+    <div class="icard-desc">Отпуск: Александр Лебедев</div>
+  </div>
+</div>
+
+<!-- ══ S4: ПРОДВИЖЕНИЕ ══ -->
+<div class="sec" id="s4">
+  <div class="eyebrow"><div class="eye-dot" id="ed4"></div><span id="ey4">Продвижение Акселератора</span></div>
+  <div class="sec-title"><em id="em4">В фокусе</em> · Конкурс стартапов</div>
+
+  <!-- Активность в СМИ -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">Активность в СМИ</div>
+  <div class="stat2" style="margin-bottom:20px">
+    <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1">?</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">публикации<br>внутренние</div>
+    </div>
+    <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1">?</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">публикации<br>внешние</div>
+    </div>
+  </div>
+
+  <!-- Сообщество ЦИР -->
+  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">Сообщество ЦИР на Ньютоне</div>
+  <div class="stat2" style="margin-bottom:24px">
+    <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1">?</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">новых<br>за неделю</div>
+    </div>
+    <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-n" style="flex-shrink:0;font-size:56px;line-height:1;color:var(--violet)">102</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.3">сейчас в<br>сообществе</div>
+    </div>
+  </div>
+
+  <!-- Карточки активности -->
+  <div class="icard" data-s="4">
+    <div class="icard-name">Конкурс стартапов</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Проведены интервью с победителями</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Статья в сообществе ЦИР — в работе</div>
+    </div>
+  </div>
+
+  <div class="icard" data-s="4">
+    <div class="icard-name">Пилот с СЭД Тезис завершён</div>
+    <div class="icard-divider"></div>
+    <div class="icard-row">
+      <div class="icard-field">
+        <div class="icard-label">Что сделано на неделе</div>
+        <div class="icard-val">Подготовка материала для публикации</div>
+      </div>
+    </div>
+    <div class="icard-artifact">
+      <div class="icard-label">Артефакт</div>
+      <div class="icard-val">Новость и отчёт по пилоту в Сообществе ЦИР — в работе</div>
+    </div>
+  </div>
+
+  <!-- Событие следующей недели -->
+  <div style="
+    margin-top:24px;
+    background:rgba(167,139,250,.08);
+    border:1px solid rgba(167,139,250,.25);
+    border-radius:16px;
+    padding:18px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+  ">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="font-size:26px;flex-shrink:0">📅</div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(167,139,250,.7);margin-bottom:5px">Событие следующей недели</div>
+        <div style="font-size:17px;font-weight:700;color:#fff;line-height:1.2">Клуб цифровизаторов</div>
+      </div>
+    </div>
+    <div style="font-size:32px;font-weight:800;color:var(--violet);flex-shrink:0;letter-spacing:-0.03em;line-height:1">30.06</div>
+  </div>
+
+  <div class="foot">Акселератор инноваций · ЦИР · Неделя 26 · 28 июня 2026<br>Данные обновлены через Telegram-бот</div>
+</div>
+
+</div>
+
+<script>
+const SECS = [
+  { acc:'#2db8f5', rgb:'45,184,245', icon:'🔭',
+    amb:'radial-gradient(ellipse 110% 65% at 50% -10%, rgba(45,184,245,.22) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 85% 90%, rgba(0,120,200,.10) 0%, transparent 50%), #07070a' },
+  { acc:'#0ae448', rgb:'10,228,72',  icon:'⚙️',
+    amb:'radial-gradient(ellipse 110% 65% at 30% 5%, rgba(10,228,72,.12) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(171,255,132,.06) 0%, transparent 50%), #07070a' },
+  { acc:'#f5c842', rgb:'245,200,66', icon:'🔧',
+    amb:'radial-gradient(ellipse 110% 65% at 65% 10%, rgba(245,200,66,.12) 0%, transparent 60%), radial-gradient(ellipse 55% 35% at 10% 85%, rgba(200,140,20,.06) 0%, transparent 50%), #07070a' },
+  { acc:'#c47d3e', rgb:'196,125,62', icon:'📘',
+    amb:'radial-gradient(ellipse 110% 65% at 40% 15%, rgba(196,125,62,.12) 0%, transparent 60%), radial-gradient(ellipse 55% 35% at 85% 10%, rgba(150,80,20,.06) 0%, transparent 50%), #07070a' },
+  { acc:'#a78bfa', rgb:'167,139,250',icon:'📣',
+    amb:'radial-gradient(ellipse 110% 65% at 50% 20%, rgba(167,139,250,.12) 0%, transparent 60%), radial-gradient(ellipse 55% 35% at 10% 15%, rgba(108,71,255,.07) 0%, transparent 50%), #07070a' },
+];
+
+const secEls = [0,1,2,3,4].map(i => document.getElementById('s'+i));
+let cur = -1;
+
+function apply(idx) {
+  if (idx === cur) return;
+  cur = idx;
+  const s = SECS[idx];
+
+  document.getElementById('amb').style.background = s.amb;
+
+  const bi = document.getElementById('bico');
+  bi.textContent = s.icon;
+  bi.style.background = `rgba(${s.rgb},.14)`;
+  bi.style.boxShadow = `0 0 12px rgba(${s.rgb},.15)`;
+
+  const wt = document.getElementById('wtag');
+  wt.style.borderColor = `rgba(${s.rgb},.32)`;
+  wt.style.color = s.acc;
+
+  for (let i = 0; i < 5; i++) {
+    const np = document.getElementById('np'+i);
+    const si = SECS[i];
+    if (i === idx) {
+      np.classList.add('on');
+      np.style.background = si.acc;
+      np.style.borderColor = 'transparent';
+      np.querySelector('.npill-lbl').style.color = 'rgba(0,0,0,0.78)';
+    } else {
+      np.classList.remove('on');
+      np.style.background = 'transparent';
+      np.style.borderColor = 'rgba(255,255,255,0.07)';
+      np.querySelector('.npill-lbl').style.color = 'rgba(240,237,232,0.38)';
+    }
+  }
+
+  for (let i = 0; i < 5; i++) {
+    const si = SECS[i];
+    const ey = document.getElementById('ey'+i);
+    const em = document.getElementById('em'+i);
+    const ed = document.getElementById('ed'+i);
+    if (ey) ey.style.color = i === idx ? si.acc : 'rgba(240,237,232,.25)';
+    if (em) em.style.color = i === idx ? si.acc : '#fff';
+    if (ed) {
+      ed.style.background = si.acc;
+      ed.style.opacity = i === idx ? '1' : '0.22';
+      ed.style.boxShadow = i === idx ? `0 0 7px rgba(${si.rgb},.55)` : 'none';
+    }
+  }
+
+  // data-s cards glow
+  document.querySelectorAll('[data-s]').forEach(el => {
+    const si = parseInt(el.dataset.s);
+    const sei = SECS[si];
+    if (si === idx) {
+      el.style.borderColor = `rgba(${sei.rgb},.2)`;
+      el.style.boxShadow = `0 0 14px rgba(${sei.rgb},.08)`;
+    } else {
+      el.style.borderColor = 'rgba(255,255,255,0.07)';
+      el.style.boxShadow = 'none';
+    }
+  });
+
+  // icard glow (section 0)
+  document.querySelectorAll('.icard').forEach(el => {
+    if (idx === 0) {
+      el.style.borderColor = 'rgba(45,184,245,.2)';
+      el.style.boxShadow = '0 0 13px rgba(45,184,245,.08)';
+    } else {
+      el.style.borderColor = 'rgba(255,255,255,0.07)';
+      el.style.boxShadow = 'none';
+    }
+  });
+
+  // pilot cards glow (section 1)
+  document.querySelectorAll('.pcard').forEach(c => {
+    const glow = c.dataset.glow;
+    if (idx !== 1) { c.style.borderColor='rgba(255,255,255,0.07)'; c.style.boxShadow='none'; return; }
+    if (glow === 'green') { c.style.borderColor='rgba(10,228,72,.13)'; c.style.boxShadow='0 0 10px rgba(10,228,72,.05)'; }
+    else if (glow === 'pink') { c.style.borderColor='rgba(254,197,251,.15)'; c.style.boxShadow='0 0 11px rgba(254,197,251,.07)'; }
+    else if (glow === 'blue') { c.style.borderColor='rgba(45,184,245,.13)'; c.style.boxShadow='0 0 10px rgba(45,184,245,.05)'; }
+    else { c.style.borderColor='rgba(255,255,255,0.07)'; c.style.boxShadow='none'; }
+  });
+
+  // infra glow (section 2)
+  document.querySelectorAll('.infra-item').forEach(el => {
+    if (idx === 2) { el.style.borderColor='rgba(245,200,66,.18)'; el.style.boxShadow='0 0 12px rgba(245,200,66,.07)'; }
+    else { el.style.borderColor='rgba(255,255,255,0.07)'; el.style.boxShadow='none'; }
+  });
+
+  // tab color
+  document.querySelectorAll('.tab2.on').forEach(t => t.style.background = s.acc);
+}
+
+// IntersectionObserver
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) apply(secEls.indexOf(e.target));
+  });
+}, { rootMargin: '-35% 0px -60% 0px', threshold: 0 });
+secEls.forEach(el => io.observe(el));
+
+// Scroll fallback
+function onScroll() {
+  const mid = window.innerHeight * 0.38;
+  let active = 0;
+  secEls.forEach((el, i) => { if (el.getBoundingClientRect().top <= mid) active = i; });
+  apply(active);
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+
+function jumpTo(i) { secEls[i].scrollIntoView({ behavior:'smooth', block:'start' }); }
+
+function filterPilots(mode, btn) {
+  document.querySelectorAll('.tab2').forEach(t => {
+    t.classList.remove('on'); t.style.background=''; t.style.color=''; t.style.borderColor='';
+  });
+  btn.classList.add('on');
+  btn.style.background = SECS[1].acc;
+  btn.style.color = '#000';
+  btn.style.borderColor = 'transparent';
+  document.querySelectorAll('#pilotsList .pcard').forEach(c => {
+    c.style.display = (c.dataset.pw === mode) ? '' : 'none';
+  });
+}
+
+setTimeout(() => apply(0), 30);
+
+
+// Card focus glow on scroll
+const CARD_SEL = '.pcard, .icard, .stat2-card, .infra-item, .dir, .fi';
+let litCard = null;
+
+function setLit(el, on) {
+  if (!el) return;
+  const sec = SECS[cur];
+  if (on) {
+    el.style.borderColor = `rgba(${sec.rgb}, 0.45)`;
+    el.style.boxShadow = `0 0 22px rgba(${sec.rgb}, 0.14)`;
+    el.style.transform = 'translateY(-1px)';
+  } else {
+    el.style.borderColor = '';
+    el.style.boxShadow = '';
+    el.style.transform = '';
+  }
+}
+
+const cardIo = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      if (litCard && litCard !== e.target) setLit(litCard, false);
+      litCard = e.target;
+      setLit(litCard, true);
+    } else if (litCard === e.target) {
+      setLit(litCard, false);
+      litCard = null;
+    }
+  });
+}, { rootMargin: '-28% 0px -62% 0px', threshold: 0 });
+
+document.querySelectorAll(CARD_SEL).forEach(el => {
+  el.style.transition = 'border-color .35s, box-shadow .35s, transform .35s';
+  cardIo.observe(el);
+});
+</script>
+</body>
+</html>
