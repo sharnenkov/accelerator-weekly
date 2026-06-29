@@ -46,7 +46,7 @@ body {
   height: 140px;
   background: linear-gradient(to bottom, #07070a 40%, transparent 100%);
 }
-.page { position: relative; max-width: 480px; margin: 0 auto; padding: 0 16px 120px; }
+.page { position: relative; max-width: 480px; margin: 0 auto; padding: 0 16px 120px; opacity: 0; transition: opacity .4s ease; }
 
 /* ── Header ── */
 .stickyH {
@@ -644,7 +644,9 @@ function renderPR(d) {
 }
 
 async function loadData() {
-  const url = 'https://raw.githubusercontent.com/sharnenkov/accelerator-weekly/main/data.json?t=' + Date.now();
+  const isNew = window.location.hostname.includes('-new');
+  const file = isNew ? 'data-new.json' : 'data.json';
+  const url = `https://raw.githubusercontent.com/sharnenkov/accelerator-weekly/main/${file}?t=${Date.now()}`;
   const res = await fetch(url);
   const d = await res.json();
 
@@ -656,13 +658,13 @@ async function loadData() {
   renderVND(d);
   renderPR(d);
 
-  // Init card observers after render
   document.querySelectorAll(CARD_SEL).forEach(el => {
     el.style.transition = 'border-color .35s, box-shadow .35s, transform .35s';
     cardIo.observe(el);
   });
 
   setTimeout(() => apply(0), 30);
+  document.querySelector('.page').style.opacity = '1';
 }
 
 loadData();
