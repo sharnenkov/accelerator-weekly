@@ -393,6 +393,9 @@ function filterPilots(mode, btn) {
   });
 }
 
+// WIP mode — only show updated items
+const IS_NEW = window.location.hostname.includes('-new') || window.location.search.includes('new=1');
+
 // Card focus glow
 const CARD_SEL = '.pcard, .icard, .stat2-card';
 let litCard = null;
@@ -433,7 +436,11 @@ function renderSearch(d) {
       </div>
     </div>`;
 
-  d.search.items.forEach(item => {
+  const searchItems = IS_NEW ? d.search.items.filter(i => i.done) : d.search.items;
+  if (IS_NEW && searchItems.length === 0) {
+    html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений за эту неделю</div>`;
+  }
+  searchItems.forEach(item => {
     html += `
     <div class="icard" data-s="0">
       <div class="icard-name">${item.name}</div>
@@ -477,7 +484,13 @@ function renderPilots(d) {
     </div>
     <div id="pilotsList">`;
 
-  d.pilots.active.forEach(p => {
+  const activePilots = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
+  const controlPilots = IS_NEW ? d.pilots.control.filter(p => p.artifact) : d.pilots.control;
+
+  if (IS_NEW && activePilots.length === 0) {
+    html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений по пилотам</div>`;
+  }
+  activePilots.forEach(p => {
     const st = STAGE_STYLE[p.stage] || STAGE_STYLE['Вход в конвейер'];
     html += `
       <div class="pcard" data-pw="active" data-glow="${st.glow}">
@@ -497,7 +510,7 @@ function renderPilots(d) {
       </div>`;
   });
 
-  d.pilots.control.forEach(p => {
+  controlPilots.forEach(p => {
     html += `
       <div class="pcard" data-pw="control" data-glow="" style="display:none">
         <div class="pcard-top">
@@ -525,8 +538,10 @@ function renderInfra(d) {
     `<div style="display:flex;gap:7px;align-items:flex-start"><span style="color:var(--gold);flex-shrink:0">·</span><span>${t}</span></div>`
   ).join('');
 
-  document.getElementById('content2').innerHTML = `
-    <div class="icard" data-s="2">
+  const infraEmpty = IS_NEW && inf.done.length === 0;
+  document.getElementById('content2').innerHTML = infraEmpty
+    ? `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений</div>`
+    : `<div class="icard" data-s="2">
       <div class="icard-name">${inf.title}</div>
       <div class="icard-divider"></div>
       <div class="icard-row">
@@ -553,6 +568,8 @@ function renderVND(d) {
         <div class="icard-name" style="color:var(--muted)">Нет новых данных</div>
         <div class="icard-desc">${v.no_data_reason || ''}</div>
       </div>`;
+  } else if (IS_NEW && v.items.length === 0) {
+    html = `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений</div>`;
   } else {
     v.items.forEach(item => {
       html += `
@@ -584,7 +601,10 @@ function renderPR(d) {
     ? `<div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1;color:${color}">${v}</div>`
     : `<div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1">?</div>`;
 
-  let cards = pr.cards.map(c => `
+  const prCards = IS_NEW ? pr.cards.filter(c => c.done) : pr.cards;
+  let cards = prCards.length === 0 && IS_NEW
+    ? `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений</div>`
+    : prCards.map(c => `
     <div class="icard" data-s="4">
       <div class="icard-name">${c.name}</div>
       <div class="icard-divider"></div>
