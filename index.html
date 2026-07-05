@@ -472,8 +472,10 @@ function renderPilots(d) {
   const total = f.entry + f.waiting + f.assembly + f.testing + f.completion;
   document.getElementById('em1').textContent = `${total} пилотов`;
 
-  const activeCount = d.pilots.active.length;
-  const controlCount = d.pilots.control.length;
+  const activePilotsFull = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
+  const controlPilotsFull = IS_NEW ? d.pilots.control.filter(p => p.artifact) : d.pilots.control;
+  const activeCount = activePilotsFull.length;
+  const controlCount = controlPilotsFull.length;
 
   let html = `
     <div class="funnel" data-s="1">
@@ -490,8 +492,8 @@ function renderPilots(d) {
     </div>
     <div id="pilotsList">`;
 
-  const activePilots = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
-  const controlPilots = IS_NEW ? d.pilots.control.filter(p => p.artifact) : d.pilots.control;
+  const activePilots = activePilotsFull;
+  const controlPilots = controlPilotsFull;
 
   if (IS_NEW && activePilots.length === 0) {
     html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений по пилотам</div>`;
