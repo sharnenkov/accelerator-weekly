@@ -2,8 +2,8 @@ name: Weekly publish
 
 on:
   schedule:
-    # Every Saturday at 08:00 Moscow time (05:00 UTC)
-    - cron: '0 5 * * 6'
+    # Monday 06:00 Moscow time = 03:00 UTC
+    - cron: '0 3 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -14,13 +14,65 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Promote data-new.json → data.json
-        run: cp data-new.json data.json
+      - name: Archive, promote with artifact inheritance, generate fresh template
+        run: |
+          node -e "
+          const fs = require('fs');
+
+          const old  = JSON.parse(fs.readFileSync('data.json',     'utf8'));
+          const next = JSON.parse(fs.readFileSync('data-new.json', 'utf8'));
+
+          // 1. Archive published week
+          const week = String(old.meta.week).padStart(2, '0');
+          fs.mkdirSync('archive', { recursive: true });
+          fs.writeFileSync('archive/week-' + week + '.json', JSON.stringify(old, null, 2));
+          console.log('Archived week ' + week);
+
+          // 2. Inherit artifacts from published data into WIP data (only where empty)
+          ['active', 'control'].forEach(list => {
+            (next.pilots[list] || []).forEach(p => {
+              if (!p.artifact) {
+                const src = (old.pilots[list] || []).find(o => o.id === p.id);
+                if (src && src.artifact) {
+                  p.artifact = src.artifact;
+                  console.log('Inherited artifact for ' + p.id);
+                }
+              }
+            });
+          });
+
+          // 3. Promote data-new → data.json
+          fs.writeFileSync('data.json', JSON.stringify(next, null, 2));
+          console.log('Promoted week ' + next.meta.week);
+
+          // 4. Generate fresh data-new.json for next week (inherit artifacts, clear done)
+          const fresh = JSON.parse(JSON.stringify(next));
+          fresh.meta.week   += 1;
+          fresh.meta.updated = new Date().toISOString();
+          fresh.search.innovations_week = 0;
+          fresh.search.items = [];
+          fresh.infra.done      = [];
+          fresh.infra.artifacts = [];
+          fresh.vnd.no_data        = false;
+          fresh.vnd.no_data_reason = '';
+          fresh.vnd.items          = [];
+          fresh.pr.focus          = '';
+          fresh.pr.media_internal = null;
+          fresh.pr.media_external = null;
+          fresh.pr.community_new  = null;
+          fresh.pr.cards          = [];
+          fresh.pr.next_event     = null;
+          ['active', 'control'].forEach(list => {
+            (fresh.pilots[list] || []).forEach(p => { p.done = ''; });
+          });
+          fs.writeFileSync('data-new.json', JSON.stringify(fresh, null, 2));
+          console.log('Generated fresh template for week ' + fresh.meta.week);
+          "
 
       - name: Commit
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
-          git diff --cached --quiet || git commit -m "chore: publish week $(date +%V) data"
+          git add data.json data-new.json archive/
+          git diff --cached --quiet || git commit -m "chore: publish week $(node -e \"console.log(JSON.parse(require('fs').readFileSync('data.json','utf8')).meta.week)\")"
           git push
