@@ -473,7 +473,10 @@ function renderPilots(d) {
   document.getElementById('em1').textContent = `${total} пилотов`;
 
   const activePilotsFull = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
-  const controlPilotsFull = d.pilots.control;
+  // On -new: active pilots without updates this week fall into control
+  const controlPilotsFull = IS_NEW
+    ? [...d.pilots.control, ...d.pilots.active.filter(p => !p.done)]
+    : d.pilots.control;
   const activeCount = activePilotsFull.length;
   const controlCount = controlPilotsFull.length;
 
