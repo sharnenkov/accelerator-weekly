@@ -261,10 +261,6 @@ export default async function handler(req, res) {
   const msg = update?.message;
   if (!msg) return res.status(200).json({ ok: true });
 
-  // Respond to Telegram immediately so it doesn't retry while we process
-  res.status(200).json({ ok: true });
-
-  const updateId = String(update.update_id || '');
   const chatId = msg.chat.id;
   const userId = String(msg.from?.id || '');
   const text = msg.text || '';
