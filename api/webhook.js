@@ -172,6 +172,19 @@ export default async function handler(req, res) {
   const chatId = msg.chat.id;
   const userId = String(msg.from?.id || '');
   const text = msg.text || '';
+  const isGroup = msg.chat.type === 'group' || msg.chat.type === 'supergroup';
+  const BOT_USERNAME = 'reacto_robot';
+  const BOT_ID = 8957784340;
+
+  // In groups respond only when: mentioned, reply to bot, or contains trigger word
+  if (isGroup) {
+    const mentionsBot = text.toLowerCase().includes(`@${BOT_USERNAME}`) || text.toLowerCase().includes('реактор');
+    const replyToBot = msg.reply_to_message?.from?.id === BOT_ID;
+    if (!mentionsBot && !replyToBot) return res.status(200).json({ ok: true });
+  }
+
+  // Strip @mention from text so Claude doesn't see it
+  const cleanText = text.replace(new RegExp(`@${BOT_USERNAME}`, 'gi'), '').trim();
 
   // Auth check
   if (ALLOWED_IDS.length > 0 && !ALLOWED_IDS.includes(userId)) {
@@ -188,7 +201,7 @@ export default async function handler(req, res) {
   const conv = conversations[userId];
 
   // Add user message to history
-  conv.messages.push({ role: 'user', content: text });
+  conv.messages.push({ role: 'user', content: cleanText || text });
 
   // Keep last 10 messages to avoid bloat
   if (conv.messages.length > 10) conv.messages = conv.messages.slice(-10);
