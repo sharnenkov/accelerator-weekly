@@ -261,6 +261,14 @@ export default async function handler(req, res) {
   const msg = update?.message;
   if (!msg) return res.status(200).json({ ok: true });
 
+  // Deduplicate — Telegram retries if we're slow, ignore already-processed updates
+  const updateId = String(update.update_id || '');
+  const { conversations: convCheck, sha: stateShaCheck } = await getState();
+  if (!convCheck._processed) convCheck._processed = [];
+  if (convCheck._processed.includes(updateId)) return res.status(200).json({ ok: true });
+  convCheck._processed = [...convCheck._processed.slice(-50), updateId];
+  await saveState(convCheck, stateShaCheck);
+
   const chatId = msg.chat.id;
   const userId = String(msg.from?.id || '');
   const text = msg.text || '';
