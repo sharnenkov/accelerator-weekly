@@ -89,14 +89,16 @@ async function saveState(conversations, sha) {
 
 // ── Claude prompt ─────────────────────────────────────────────────────────────
 
-function systemPrompt(data) {
+function systemPrompt(data, firstName) {
   const pilots = [
     ...data.pilots.active.map(p => `[активный] ${p.id} · ${p.name} (${p.stage})`),
     ...data.pilots.control.map(p => `[контроль] ${p.id} · ${p.name} (${p.stage})`),
   ].join('\n');
 
+  const userLine = firstName ? `Собеседник: ${firstName}. Обращайся по имени в ответах.` : '';
   return `Ты — Реактор, ИИ-помощник команды Акселератора инноваций ЦИР (Центр инноваций и развития).
 Работаешь в Telegram, помогаешь команде вести еженедельный дашборд и отвечаешь на вопросы по нему.
+${userLine}
 
 ━━━ ФОРМАТИРОВАНИЕ ━━━
 Используй HTML-теги Telegram: <b>жирный</b>, <i>курсив</i>, <code>код</code>
@@ -260,6 +262,7 @@ export default async function handler(req, res) {
   const chatId = msg.chat.id;
   const userId = String(msg.from?.id || '');
   const text = msg.text || '';
+  const firstName = msg.from?.first_name || '';
   const isGroup = msg.chat.type === 'group' || msg.chat.type === 'supergroup';
   const BOT_USERNAME = 'reacto_robot';
   const BOT_ID = 8957784340;
@@ -300,7 +303,7 @@ export default async function handler(req, res) {
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      system: systemPrompt(data),
+      system: systemPrompt(data, firstName),
       messages: conv.messages,
     });
     claudeReply = response.content[0].text;
