@@ -414,6 +414,15 @@ const cardIo = new IntersectionObserver(entries => {
 
 // ── Render functions ──
 
+function fmtArtifact(text) {
+  if (!text) return '';
+  const parts = text.split(' · ').map(s => s.trim()).filter(Boolean);
+  if (parts.length < 2) return text;
+  return parts.map((s, i) =>
+    `<div style="display:flex;gap:8px;align-items:flex-start"><span style="flex-shrink:0;opacity:.55">${i+1}.</span><span>${s}</span></div>`
+  ).join('');
+}
+
 const MONTHS = {'января':'Январь','февраля':'Февраль','марта':'Март','апреля':'Апрель','мая':'Май','июня':'Июнь','июля':'Июль','августа':'Август','сентября':'Сентябрь','октября':'Октябрь','ноября':'Ноябрь','декабря':'Декабрь'};
 function fmtWeekTag(week, dateStr) {
   const [, mon, year] = dateStr.split(' ');
@@ -516,7 +525,7 @@ function renderPilots(d) {
         </div>
         <div class="pcard-result">
           <div class="pcard-label">Артефакт</div>
-          <div class="pcard-val">${p.artifact}</div>
+          <div class="pcard-val">${fmtArtifact(p.artifact)}</div>
         </div>
       </div>`;
   });
@@ -531,7 +540,7 @@ function renderPilots(d) {
         <div class="pcard-divider"></div>
         <div class="pcard-result">
           <div class="pcard-label">Артефакт</div>
-          <div class="pcard-val">${p.artifact}</div>
+          <div class="pcard-val">${fmtArtifact(p.artifact)}</div>
         </div>
       </div>`;
   });
@@ -675,8 +684,7 @@ function renderPR(d) {
 }
 
 async function loadData() {
-  const isNew = window.location.hostname.includes('-new');
-  const file = isNew ? 'data-new.json' : 'data.json';
+  const file = IS_NEW ? 'data-new.json' : 'data.json';
   const url = `https://raw.githubusercontent.com/sharnenkov/accelerator-weekly/main/${file}?t=${Date.now()}`;
   const res = await fetch(url);
   const d = await res.json();
