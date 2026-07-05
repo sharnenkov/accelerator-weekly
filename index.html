@@ -473,7 +473,7 @@ function renderPilots(d) {
   document.getElementById('em1').textContent = `${total} пилотов`;
 
   const activePilotsFull = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
-  const controlPilotsFull = IS_NEW ? d.pilots.control.filter(p => p.artifact) : d.pilots.control;
+  const controlPilotsFull = d.pilots.control;
   const activeCount = activePilotsFull.length;
   const controlCount = controlPilotsFull.length;
 
