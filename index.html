@@ -216,7 +216,7 @@ body {
           <div class="brand-sub">ЦИР · Еженедельный отчёт</div>
         </div>
       </div>
-      <div class="wtag" id="wtag">Нед. — · —</div>
+      <div class="wtag" id="wtag">Н— · —</div>
     </div>
     <div class="navRow">
       <div class="npill" id="np0" onclick="jumpTo(0)"><div class="npill-dot" style="background:var(--blue)"></div><span class="npill-lbl">Поиск</span></div>
@@ -414,6 +414,12 @@ const cardIo = new IntersectionObserver(entries => {
 
 // ── Render functions ──
 
+const MONTHS = {'января':'Январь','февраля':'Февраль','марта':'Март','апреля':'Апрель','мая':'Май','июня':'Июнь','июля':'Июль','августа':'Август','сентября':'Сентябрь','октября':'Октябрь','ноября':'Ноябрь','декабря':'Декабрь'};
+function fmtWeekTag(week, dateStr) {
+  const [, mon, year] = dateStr.split(' ');
+  return `Н${week} · ${MONTHS[mon] || mon} ${year}`;
+}
+
 function stageBadge(stage) {
   const st = STAGE_STYLE[stage] || STAGE_STYLE['Вход в конвейер'];
   return `<span class="badge" style="background:${st.bg};color:${st.color};border-color:${st.border}">${stage}</span>`;
@@ -422,7 +428,7 @@ function stageBadge(stage) {
 function renderSearch(d) {
   const total = (d.active?.length || 0) + (d.control?.length || 0);
   document.getElementById('em0').textContent = `${d.search.innovations_week} решений`;
-  document.getElementById('wtag').textContent = `Нед. ${d.meta.week} · ${d.meta.date.split(' ').slice(1).join(' ')}`;
+  document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
 
   let html = `
     <div class="stat2">
@@ -670,7 +676,7 @@ async function loadData() {
   const res = await fetch(url);
   const d = await res.json();
 
-  document.getElementById('wtag').textContent = `Нед. ${d.meta.week} · ${d.meta.date.split(' ').slice(1).join(' ')}`;
+  document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
 
   renderSearch(d);
   renderPilots(d);
