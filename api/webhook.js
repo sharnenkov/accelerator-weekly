@@ -155,6 +155,12 @@ function systemPrompt(data) {
 ${pilots}
 
 ━━━ ОБНОВЛЕНИЕ ДАННЫХ ━━━
+Важно: данные НАКАПЛИВАЮТСЯ, не перезаписываются.
+· Поля "done" и "artifact" у пилотов — дописываются через " · "
+· Массивы infra.done, infra.artifacts, search.items, pr.cards, vnd.items — пополняются
+· Начинай новую запись с даты: "05.07 — текст"
+· Разные люди могут вносить данные по одному пилоту в разные дни — всё сохранится
+
 Когда пользователь хочет внести обновление:
 1. Уточни если неясно — какой раздел, какой пилот
 2. Спроси про артефакт (если не упомянул). /skip — пропустить.
@@ -167,29 +173,70 @@ PATCH:
 CONFIRM: <что обновлено>
 
 Примеры патчей:
-· Пилот активный: { "pilots": { "active": { "find": "АИ.П26.01", "update": { "done": "...", "artifact": "..." } } } }
-· Пилот контроль: { "pilots": { "control": { "find": "АИ.П26.02", "update": { "artifact": "..." } } } }
-· Инфра: { "infra": { "done": ["...", "..."], "artifacts": ["..."] } }
+· Пилот активный: { "pilots": { "active": { "find": "АИ.П26.01", "update": { "done": "05.07 — Проведена встреча", "artifact": "Протокол встречи" } } } }
+· Пилот контроль: { "pilots": { "control": { "find": "АИ.П26.02", "update": { "artifact": "Финальный отчёт" } } } }
+· Инфра (добавить): { "infra": { "done": ["05.07 — Настроен доступ к LLM"], "artifacts": ["Инструкция по подключению"] } }
 · PR: { "pr": { "community_total": 105 } }
-· Поиск: { "search": { "innovations_week": 6 } }
-· ВНД нет данных: { "vnd": { "no_data": true, "no_data_reason": "..." } }
-· Новая карточка поиска: { "search": { "items": [{ "id": "...", "name": "...", "desc": "...", "done": "...", "artifact": "..." }] } }`;
+· Поиск (счётчик): { "search": { "innovations_week": 6 } }
+· Новая карточка поиска: { "search": { "items": [{ "id": "newid", "name": "...", "desc": "...", "done": "05.07 — ...", "artifact": "..." }] } }
+· ВНД нет данных: { "vnd": { "no_data": true, "no_data_reason": "Отпуск: Иванов" } }`;
 }
 
 // ── Apply patch to data ────────────────────────────────────────────────────────
 
+function appendStr(existing, incoming) {
+  if (!existing) return incoming;
+  if (!incoming) return existing;
+  return existing + ' · ' + incoming;
+}
+
 function applyPatch(data, patch) {
-  const d = JSON.parse(JSON.stringify(data)); // deep clone
+  const d = JSON.parse(JSON.stringify(data));
 
   for (const [key, val] of Object.entries(patch)) {
+
     if (key === 'pilots' && typeof val === 'object') {
       for (const [listKey, listPatch] of Object.entries(val)) {
-        if (listPatch.find && listPatch.update) {
-          const list = d.pilots[listKey];
-          const idx = list.findIndex(p => p.id === listPatch.find || p.name.includes(listPatch.find));
-          if (idx >= 0) Object.assign(list[idx], listPatch.update);
+        if (!listPatch.find || !listPatch.update) continue;
+        const list = d.pilots[listKey];
+        const idx = list.findIndex(p => p.id === listPatch.find || p.name.includes(listPatch.find));
+        if (idx < 0) continue;
+        const pilot = list[idx];
+        for (const [field, newVal] of Object.entries(listPatch.update)) {
+          // Accumulate text fields, replace everything else
+          if ((field === 'done' || field === 'artifact') && typeof newVal === 'string') {
+            pilot[field] = appendStr(pilot[field], newVal);
+          } else {
+            pilot[field] = newVal;
+          }
         }
       }
+
+    } else if (key === 'infra' && typeof val === 'object') {
+      if (val.done)      d.infra.done      = [...(d.infra.done || []),      ...[].concat(val.done)];
+      if (val.artifacts) d.infra.artifacts = [...(d.infra.artifacts || []), ...[].concat(val.artifacts)];
+      for (const [f, v] of Object.entries(val)) {
+        if (f !== 'done' && f !== 'artifacts') d.infra[f] = v;
+      }
+
+    } else if (key === 'search' && typeof val === 'object') {
+      if (val.items) d.search.items = [...(d.search.items || []), ...[].concat(val.items)];
+      for (const [f, v] of Object.entries(val)) {
+        if (f !== 'items') d.search[f] = v;
+      }
+
+    } else if (key === 'pr' && typeof val === 'object') {
+      if (val.cards) d.pr.cards = [...(d.pr.cards || []), ...[].concat(val.cards)];
+      for (const [f, v] of Object.entries(val)) {
+        if (f !== 'cards') d.pr[f] = v;
+      }
+
+    } else if (key === 'vnd' && typeof val === 'object') {
+      if (val.items) d.vnd.items = [...(d.vnd.items || []), ...[].concat(val.items)];
+      for (const [f, v] of Object.entries(val)) {
+        if (f !== 'items') d.vnd[f] = v;
+      }
+
     } else if (typeof val === 'object' && !Array.isArray(val) && val !== null && typeof d[key] === 'object') {
       Object.assign(d[key], val);
     } else {
