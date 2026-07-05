@@ -13,11 +13,21 @@ const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
 
 // ── Telegram helpers ──────────────────────────────────────────────────────────
 
+function mdToHtml(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/\*(.+?)\*/g, '<i>$1</i>')
+    .replace(/__(.+?)__/g, '<b>$1</b>')
+    .replace(/_(.+?)_/g, '<i>$1</i>')
+    .replace(/`(.+?)`/g, '<code>$1</code>');
+}
+
 async function tgSend(chatId, text, opts = {}) {
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', ...opts }),
+    body: JSON.stringify({ chat_id: chatId, text: mdToHtml(text), parse_mode: 'HTML', ...opts }),
   });
 }
 
