@@ -4,7 +4,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
 const GITHUB_TOKEN   = process.env.GITHUB_TOKEN;
 const GITHUB_REPO    = 'sharnenkov/accelerator-weekly';
-const DATA_FILE      = 'data.json';
+const DATA_FILE      = 'data-new.json';
 
 // Allowed Telegram user IDs (set in env as comma-separated list, or leave empty = anyone)
 const ALLOWED_IDS = (process.env.ALLOWED_TELEGRAM_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -329,7 +329,7 @@ export default async function handler(req, res) {
 
       if (ok) {
         conv.messages = []; // reset conversation after successful update
-        await tgSend(chatId, `✅ ${confirmMatch?.[1] || 'Дашборд обновлён'}\n\n🔗 <a href="https://accelerator-weekly.vercel.app">Открыть дашборд</a>`);
+        await tgSend(chatId, `✅ ${confirmMatch?.[1] || 'Дашборд обновлён'}\n\n🔗 <a href="https://accelerator-weekly-new.vercel.app">Открыть дашборд (текущая неделя)</a>`);
       } else {
         await tgSend(chatId, '❌ Не удалось сохранить в GitHub. Попробуй ещё раз.');
       }
