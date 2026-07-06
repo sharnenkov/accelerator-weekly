@@ -76,9 +76,10 @@ jobs:
           fresh.pr.community_new  = null;
           fresh.pr.cards          = [];
           fresh.pr.next_event     = null;
-          ['active', 'control'].forEach(list => {
-            (fresh.pilots[list] || []).forEach(p => { p.done = ''; });
-          });
+          // Active pilots start each week fresh — clear both done and artifact
+          (fresh.pilots.active || []).forEach(p => { p.done = ''; p.artifact = ''; });
+          // Control pilots keep artifact for reference, only clear done
+          (fresh.pilots.control || []).forEach(p => { p.done = ''; });
           fs.writeFileSync('data-new.json', JSON.stringify(fresh, null, 2));
           console.log('Generated fresh template for week ' + fresh.meta.week);
           "

@@ -6,7 +6,6 @@ const GITHUB_TOKEN   = process.env.GITHUB_TOKEN;
 const GITHUB_REPO    = 'sharnenkov/accelerator-weekly';
 const DATA_FILE      = 'data-new.json';
 
-// Allowed Telegram user IDs (set in env as comma-separated list, or leave empty = anyone)
 const ALLOWED_IDS = (process.env.ALLOWED_TELEGRAM_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 
 const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
@@ -14,7 +13,6 @@ const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
 // ── Telegram helpers ──────────────────────────────────────────────────────────
 
 function mdToHtml(text) {
-  // Only convert markdown — don't escape HTML tags Claude already wrote
   return text
     .replace(/\*\*(.+?)\*\*/gs, '<b>$1</b>')
     .replace(/\*(.+?)\*/gs, '<i>$1</i>')
@@ -87,15 +85,81 @@ async function saveState(conversations, sha) {
   );
 }
 
-// ── Claude prompt ─────────────────────────────────────────────────────────────
+// ── Human-readable patch preview ──────────────────────────────────────────────
 
-function systemPrompt(data, firstName) {
+function previewPatch(patch, data) {
+  const lines = [];
+
+  if (patch.pilots) {
+    for (const [listKey, listPatch] of Object.entries(patch.pilots)) {
+      if (!listPatch.find || !listPatch.update) continue;
+      const found = data.pilots[listKey]?.find(
+        p => p.id === listPatch.find || p.name.includes(listPatch.find)
+      );
+      const label = listKey === 'active' ? 'активный' : 'контроль';
+      const name = found ? `${found.id} · ${found.name}` : listPatch.find;
+      lines.push(`🔹 <b>${name}</b> [${label}]${listPatch['$set'] ? ' <i>(замена)</i>' : ''}`);
+      if (listPatch.update.done)     lines.push(`  Что сделано: ${listPatch.update.done}`);
+      if (listPatch.update.artifact) lines.push(`  Артефакт: ${listPatch.update.artifact}`);
+    }
+  }
+
+  if (patch.search) {
+    if (patch.search.innovations_week !== undefined)
+      lines.push(`🔍 <b>Поиск:</b> ${patch.search.innovations_week} инноваций за неделю`);
+    if (patch.search.items) {
+      [].concat(patch.search.items).forEach(item => {
+        lines.push(`  + <b>${item.name}</b>`);
+        if (item.done)     lines.push(`    ${item.done}`);
+        if (item.artifact) lines.push(`    Артефакт: ${item.artifact}`);
+      });
+    }
+  }
+
+  if (patch.infra) {
+    if (patch.infra.done)
+      [].concat(patch.infra.done).forEach(s => lines.push(`🏗️ <b>Инфра:</b> ${s}`));
+    if (patch.infra.artifacts)
+      [].concat(patch.infra.artifacts).forEach(s => lines.push(`    Артефакт: ${s}`));
+  }
+
+  if (patch.vnd) {
+    if (patch.vnd.no_data)
+      lines.push(`📋 <b>ВНД:</b> нет данных — ${patch.vnd.no_data_reason || ''}`);
+    if (patch.vnd.items)
+      [].concat(patch.vnd.items).forEach(item => {
+        lines.push(`📋 <b>ВНД:</b> ${item.name || ''}`);
+        if (item.done) lines.push(`    ${item.done}`);
+      });
+  }
+
+  if (patch.pr) {
+    if (patch.pr.focus)           lines.push(`📣 <b>PR фокус:</b> ${patch.pr.focus}`);
+    if (patch.pr.community_total) lines.push(`    Сообщество: ${patch.pr.community_total}`);
+    if (patch.pr.media_internal)  lines.push(`    Публикации внутри: ${patch.pr.media_internal}`);
+    if (patch.pr.media_external)  lines.push(`    Публикации внешние: ${patch.pr.media_external}`);
+    if (patch.pr.cards) {
+      [].concat(patch.pr.cards).forEach(c => {
+        lines.push(`  + ${c.title || c.type || 'Активность'}`);
+        if (c.done)     lines.push(`    ${c.done}`);
+        if (c.artifact) lines.push(`    Артефакт: ${c.artifact}`);
+      });
+    }
+  }
+
+  return lines.length > 0 ? lines.join('\n') : 'Данные будут обновлены';
+}
+
+// ── Claude system prompt ──────────────────────────────────────────────────────
+
+function systemPrompt(data, firstName, extraNote) {
   const pilots = [
     ...data.pilots.active.map(p => `[активный] ${p.id} · ${p.name} (${p.stage})`),
     ...data.pilots.control.map(p => `[контроль] ${p.id} · ${p.name} (${p.stage})`),
   ].join('\n');
 
   const userLine = firstName ? `Собеседник: ${firstName}. Обращайся по имени в ответах.` : '';
+
   return `Ты — Реактор, ИИ-помощник команды Акселератора инноваций ЦИР (Центр инноваций и развития).
 Твой Telegram-username: @reacto_robot. Если спрашивают имя, username или собаку — отвечай именно это, без вариантов.
 Работаешь в Telegram, помогаешь команде вести еженедельный дашборд и отвечаешь на вопросы по нему.
@@ -150,7 +214,6 @@ ${userLine}
 · «Что сделано» — конкретное действие (встреча, решение, отправка), не статус
 · Артефакт — осязаемый результат: документ, ссылка, таблица, письмо
 · Если артефакта нет — скажи «/skip», бот не будет переспрашивать
-· Пилоты на контроле наследуют артефакты с прошлой недели автоматически
 
 ━━━ ТЕКУЩИЕ ДАННЫЕ (Н${data.meta.week}) ━━━
 Поиск: ${data.search.innovations_week} инноваций на неделе, ${data.search.innovations_base} в базе
@@ -159,10 +222,10 @@ ${userLine}
 ${pilots}
 
 ━━━ ОБНОВЛЕНИЕ ДАННЫХ ━━━
-Важно: данные НАКАПЛИВАЮТСЯ, не перезаписываются.
-· Поля "done" и "artifact" у пилотов — дописываются через " · "
+Данные НАКАПЛИВАЮТСЯ внутри недели:
+· Поля "done" и "artifact" у активных пилотов — дописываются через " · "
 · Массивы infra.done, infra.artifacts, search.items, pr.cards, vnd.items — пополняются
-· Начинай новую запись с даты: "05.07 — текст"
+· Начинай новую запись с даты: "07.07 — текст"
 · Разные люди могут вносить данные по одному пилоту в разные дни — всё сохранится
 
 Когда пользователь хочет внести обновление:
@@ -183,7 +246,13 @@ CONFIRM: <что обновлено>
 · PR: { "pr": { "community_total": 105 } }
 · Поиск (счётчик): { "search": { "innovations_week": 6 } }
 · Новая карточка поиска: { "search": { "items": [{ "id": "newid", "name": "...", "desc": "...", "done": "05.07 — ...", "artifact": "..." }] } }
-· ВНД нет данных: { "vnd": { "no_data": true, "no_data_reason": "Отпуск: Иванов" } }`;
+· ВНД нет данных: { "vnd": { "no_data": true, "no_data_reason": "Отпуск: Иванов" } }
+
+━━━ РЕЖИМ ПРАВКИ ($set) ━━━
+Если пользователь хочет ИСПРАВИТЬ (а не дополнить) уже записанный текст — используй флаг "$set": true:
+{ "pilots": { "active": { "find": "АИ.П26.28", "$set": true, "update": { "done": "07.07 — исправленный текст", "artifact": "Новый артефакт" } } } }
+Это полностью заменит текущее значение поля, а не дополнит его.
+Используй $set когда: пользователь говорит «исправь», «замени», «перепиши», «правка», «было неверно».${extraNote ? '\n\n' + extraNote : ''}`;
 }
 
 // ── Apply patch to data ────────────────────────────────────────────────────────
@@ -206,10 +275,20 @@ function applyPatch(data, patch) {
         const idx = list.findIndex(p => p.id === listPatch.find || p.name.includes(listPatch.find));
         if (idx < 0) continue;
         const pilot = list[idx];
+        const isSet = !!listPatch['$set'];
+
         for (const [field, newVal] of Object.entries(listPatch.update)) {
-          // Accumulate text fields, replace everything else
-          if ((field === 'done' || field === 'artifact') && typeof newVal === 'string') {
-            pilot[field] = appendStr(pilot[field], newVal);
+          if (isSet) {
+            // Explicit overwrite (edit/correction mode)
+            pilot[field] = newVal;
+          } else if (field === 'done' && typeof newVal === 'string') {
+            // First update this week for active pilots: clear inherited artifact
+            if (listKey === 'active' && !pilot.done) {
+              pilot.artifact = '';
+            }
+            pilot.done = appendStr(pilot.done, newVal);
+          } else if (field === 'artifact' && typeof newVal === 'string') {
+            pilot.artifact = appendStr(pilot.artifact, newVal);
           } else {
             pilot[field] = newVal;
           }
@@ -254,6 +333,9 @@ function applyPatch(data, patch) {
 
 // ── Main handler ──────────────────────────────────────────────────────────────
 
+const SAVE_WORDS  = ['да', 'ок', 'ok', '+', '👍', 'yes', 'сохранить', 'ладно', 'записать', 'верно', 'правильно'];
+const EDIT_WORDS  = ['изменить', 'нет', 'исправить', 'правка', 'отмена', 'cancel', 'edit', 'не то', 'неверно'];
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(200).json({ ok: true });
 
@@ -261,51 +343,87 @@ export default async function handler(req, res) {
   const msg = update?.message;
   if (!msg) return res.status(200).json({ ok: true });
 
-  const chatId = msg.chat.id;
-  const userId = String(msg.from?.id || '');
-  const text = msg.text || '';
+  const chatId    = msg.chat.id;
+  const userId    = String(msg.from?.id || '');
+  const text      = msg.text || '';
   const firstName = msg.from?.first_name || '';
-  const isGroup = msg.chat.type === 'group' || msg.chat.type === 'supergroup';
+  const isGroup   = msg.chat.type === 'group' || msg.chat.type === 'supergroup';
   const BOT_USERNAME = 'reacto_robot';
-  const BOT_ID = 8957784340;
+  const BOT_ID       = 8957784340;
 
-  // In groups respond only when: mentioned, reply to bot, or contains trigger word
   if (isGroup) {
     const mentionsBot = text.toLowerCase().includes(`@${BOT_USERNAME}`) || text.toLowerCase().includes('реактор');
-    const replyToBot = msg.reply_to_message?.from?.id === BOT_ID;
+    const replyToBot  = msg.reply_to_message?.from?.id === BOT_ID;
     if (!mentionsBot && !replyToBot) return res.status(200).json({ ok: true });
   }
 
-  // Strip @mention from text so Claude doesn't see it
   const cleanText = text.replace(new RegExp(`@${BOT_USERNAME}`, 'gi'), '').trim();
 
-  // Auth check
   if (ALLOWED_IDS.length > 0 && !ALLOWED_IDS.includes(userId)) {
     await tgSend(chatId, '⛔ Нет доступа.');
     return res.status(200).json({ ok: true });
   }
 
-  // Load state + data in parallel
   const [stateResult, dataResult] = await Promise.all([getState(), getDataJson()]);
   const { conversations, sha: stateSha } = stateResult;
   const { data, sha: dataSha } = dataResult;
 
-  if (!conversations[userId]) conversations[userId] = { messages: [] };
+  if (!conversations[userId]) conversations[userId] = { messages: [], pendingPatch: null, editMode: false };
   const conv = conversations[userId];
 
-  // Add user message to history
+  const lc = cleanText.toLowerCase().trim();
+
+  // ── Handle pending confirmation ───────────────────────────────────────────
+  if (conv.pendingPatch) {
+    const isSave = SAVE_WORDS.some(w => lc === w);
+    const isEdit = EDIT_WORDS.some(w => lc === w);
+
+    if (isSave) {
+      const { patch, confirmText } = conv.pendingPatch;
+      const newData = applyPatch(data, patch);
+      const ok = await putDataJson(newData, dataSha, `feat: update via bot — ${confirmText}`);
+      conv.pendingPatch = null;
+      conv.editMode = false;
+      if (ok) {
+        // Keep last 6 messages for context continuity
+        conv.messages = conv.messages.slice(-6);
+        await tgSend(chatId, `✅ ${confirmText}\n\n🔗 <a href="https://accelerator-weekly-new.vercel.app">Открыть дашборд (текущая неделя)</a>`);
+      } else {
+        await tgSend(chatId, '❌ Не удалось сохранить в GitHub. Попробуй ещё раз.');
+      }
+      await saveState(conversations, stateSha);
+      return res.status(200).json({ ok: true });
+    }
+
+    if (isEdit) {
+      conv.pendingPatch = null;
+      conv.editMode = true;
+      await tgSend(chatId, '✏️ Хорошо. Отправь исправленный текст — запишу его целиком, без добавления к старому.');
+      await saveState(conversations, stateSha);
+      return res.status(200).json({ ok: true });
+    }
+
+    // Unrelated message: clear pending and proceed as new request
+    conv.pendingPatch = null;
+  }
+
+  // ── Add user message to history ───────────────────────────────────────────
   conv.messages.push({ role: 'user', content: cleanText || text });
 
-  // Keep last 10 messages to avoid bloat
-  if (conv.messages.length > 10) conv.messages = conv.messages.slice(-10);
+  // Keep last 20 messages
+  if (conv.messages.length > 20) conv.messages = conv.messages.slice(-20);
 
-  // Call Claude
+  // ── Call Claude ───────────────────────────────────────────────────────────
+  const extraNote = conv.editMode
+    ? '⚠️ РЕЖИМ ПРАВКИ АКТИВЕН: для следующего патча ОБЯЗАТЕЛЬНО используй "$set": true.'
+    : null;
+
   let claudeReply = '';
   try {
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      system: systemPrompt(data, firstName),
+      max_tokens: 2048,
+      system: systemPrompt(data, firstName, extraNote),
       messages: conv.messages,
     });
     claudeReply = response.content[0].text;
@@ -314,35 +432,37 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  // Add assistant reply to history
-  conv.messages.push({ role: 'assistant', content: claudeReply });
-
-  // Check if Claude returned a patch
-  const patchMatch = claudeReply.match(/PATCH:\s*```json\s*([\s\S]+?)```/);
+  // ── Process Claude response ───────────────────────────────────────────────
+  const patchMatch   = claudeReply.match(/PATCH:\s*```json\s*([\s\S]+?)```/);
   const confirmMatch = claudeReply.match(/CONFIRM:\s*(.+)/);
 
   if (patchMatch) {
     try {
-      const patch = JSON.parse(patchMatch[1]);
-      const newData = applyPatch(data, patch);
-      const ok = await putDataJson(newData, dataSha, `feat: update via bot — ${confirmMatch?.[1] || 'manual update'}`);
+      const patch       = JSON.parse(patchMatch[1]);
+      const confirmText = confirmMatch?.[1]?.trim() || 'Дашборд обновлён';
 
-      if (ok) {
-        conv.messages = []; // reset conversation after successful update
-        await tgSend(chatId, `✅ ${confirmMatch?.[1] || 'Дашборд обновлён'}\n\n🔗 <a href="https://accelerator-weekly-new.vercel.app">Открыть дашборд (текущая неделя)</a>`);
-      } else {
-        await tgSend(chatId, '❌ Не удалось сохранить в GitHub. Попробуй ещё раз.');
-      }
+      // Store pending patch — don't save yet
+      conv.pendingPatch = { patch, confirmText };
+      conv.editMode     = false;
+
+      // Add cleaned reply to history (without the raw PATCH block)
+      const historyReply = confirmText;
+      conv.messages.push({ role: 'assistant', content: historyReply });
+
+      const preview = previewPatch(patch, data);
+      await tgSend(chatId,
+        `📋 <b>Проверьте перед сохранением:</b>\n\n${preview}\n\n` +
+        `<i>Ответьте <b>да</b> — сохранить, <b>изменить</b> — скорректировать текст</i>`
+      );
     } catch (err) {
-      await tgSend(chatId, `❌ Ошибка при применении изменений: ${err.message}`);
+      await tgSend(chatId, `❌ Ошибка при разборе патча: ${err.message}`);
     }
   } else {
-    // Claude asks a clarifying question
+    // Regular conversation — send Claude reply as-is
+    conv.messages.push({ role: 'assistant', content: claudeReply });
     await tgSend(chatId, claudeReply);
   }
 
-  // Save updated state
   await saveState(conversations, stateSha);
-
   return res.status(200).json({ ok: true });
 }
