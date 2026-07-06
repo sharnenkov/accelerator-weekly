@@ -22,6 +22,12 @@ jobs:
           const old  = JSON.parse(fs.readFileSync('data.json',     'utf8'));
           const next = JSON.parse(fs.readFileSync('data-new.json', 'utf8'));
 
+          // Guard: skip if data-new is not ahead of data (already published)
+          if (next.meta.week <= old.meta.week) {
+            console.log('SKIP: data-new week ' + next.meta.week + ' <= data week ' + old.meta.week + ', already published.');
+            process.exit(0);
+          }
+
           // 1. Archive published week
           const week = String(old.meta.week).padStart(2, '0');
           fs.mkdirSync('archive', { recursive: true });
