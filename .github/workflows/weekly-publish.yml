@@ -41,11 +41,19 @@ jobs:
             });
           });
 
-          // 3. Promote data-new → data.json
+          // 3. Move active pilots without done → control before promoting
+          const withDone    = next.pilots.active.filter(p => p.done);
+          const withoutDone = next.pilots.active.filter(p => !p.done);
+          const toControl   = withoutDone.map(({done, ...p}) => p);
+          next.pilots.active  = withDone;
+          next.pilots.control = [...toControl, ...next.pilots.control];
+          console.log('Moved to control: ' + toControl.map(p => p.id).join(', '));
+
+          // 4. Promote data-new → data.json
           fs.writeFileSync('data.json', JSON.stringify(next, null, 2));
           console.log('Promoted week ' + next.meta.week);
 
-          // 4. Generate fresh data-new.json for next week (inherit artifacts, clear done)
+          // 5. Generate fresh data-new.json for next week (inherit artifacts, clear done)
           const fresh = JSON.parse(JSON.stringify(next));
           fresh.meta.week   += 1;
           fresh.meta.updated = new Date().toISOString();
