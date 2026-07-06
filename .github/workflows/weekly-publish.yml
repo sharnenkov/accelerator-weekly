@@ -74,5 +74,6 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json data-new.json archive/
-          git diff --cached --quiet || git commit -m "chore: publish week $(node -e \"console.log(JSON.parse(require('fs').readFileSync('data.json','utf8')).meta.week)\")"
+          WEEK=$(node -p "JSON.parse(require('fs').readFileSync('data.json','utf8')).meta.week")
+          git diff --cached --quiet || git commit -m "chore: publish week ${WEEK}"
           git push
