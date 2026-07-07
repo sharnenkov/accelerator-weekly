@@ -36,6 +36,15 @@
     ]
   },
   "732508798": {
-    "messages": []
+    "messages": [
+      {
+        "role": "user",
+        "content": "Ты тут?"
+      },
+      {
+        "role": "assistant",
+        "content": "Привет, <b>Алексей</b>! 👋\n\nЯ здесь — готов помочь с дашбордом недели. \n\nЧто нужно внести или обновить?\n\n🔗 <b>Текущая неделя (WIP)</b>: https://accelerator-weekly-new.vercel.app\n🔗 <b>Опубликованная</b>: https://accelerator-weekly.vercel.app"
+      }
+    ]
   }
 }
