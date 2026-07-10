@@ -30,6 +30,7 @@
   --gold:   #f5c842;
   --brown:  #c47d3e;
   --violet: #a78bfa;
+  --coral:  #ff7a59;
 }
 html { overflow-x: clip; }
 body {
@@ -190,6 +191,21 @@ body {
 .pcard-result .pcard-label { color:var(--muted); }
 .pcard-result .pcard-val { font-size:12px; color:rgba(255,255,255,0.6); }
 
+/* ── Budget ── */
+.btotal-n { font-size:44px; font-weight:800; letter-spacing:-0.03em; color:#fff; line-height:1; margin-bottom:16px; }
+.budgetcat {
+  background:var(--surf); border:1px solid var(--border); border-radius:16px;
+  padding:16px 17px; margin-bottom:14px; transition:border-color 1s;
+}
+.budgetcat:last-child { margin-bottom:0; }
+.budgetcat-ttl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:14px; }
+.brow { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.brow:last-child { margin-bottom:0; }
+.blbl { font-size:11px; color:var(--muted); width:26px; flex-shrink:0; }
+.btrack { flex:1; height:18px; background:rgba(255,255,255,0.04); border-radius:5px; overflow:hidden; }
+.bbar { height:100%; border-radius:5px; }
+.bval { font-size:11px; color:rgba(255,255,255,0.75); flex-shrink:0; text-align:right; min-width:96px; font-variant-numeric:tabular-nums; }
+
 /* ── Section label ── */
 .sec-label {
   font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
@@ -220,49 +236,58 @@ body {
       <div class="wtag" id="wtag">Н— · —</div>
     </div>
     <div class="navRow">
-      <div class="npill" id="np0" onclick="jumpTo(0)"><div class="npill-dot" style="background:var(--blue)"></div><span class="npill-lbl">Поиск</span></div>
-      <div class="npill" id="np1" onclick="jumpTo(1)"><div class="npill-dot" style="background:var(--green)"></div><span class="npill-lbl">Конвейер</span></div>
-      <div class="npill" id="np2" onclick="jumpTo(2)"><div class="npill-dot" style="background:var(--gold)"></div><span class="npill-lbl">Инфра</span></div>
-      <div class="npill" id="np3" onclick="jumpTo(3)"><div class="npill-dot" style="background:var(--brown)"></div><span class="npill-lbl">ВНД</span></div>
-      <div class="npill" id="np4" onclick="jumpTo(4)"><div class="npill-dot" style="background:var(--violet)"></div><span class="npill-lbl">PR</span></div>
+      <div class="npill" id="np0" onclick="jumpTo(0)"><div class="npill-dot" style="background:var(--coral)"></div><span class="npill-lbl">Бюджет</span></div>
+      <div class="npill" id="np1" onclick="jumpTo(1)"><div class="npill-dot" style="background:var(--blue)"></div><span class="npill-lbl">Поиск</span></div>
+      <div class="npill" id="np2" onclick="jumpTo(2)"><div class="npill-dot" style="background:var(--green)"></div><span class="npill-lbl">Конвейер</span></div>
+      <div class="npill" id="np3" onclick="jumpTo(3)"><div class="npill-dot" style="background:var(--gold)"></div><span class="npill-lbl">Инфра</span></div>
+      <div class="npill" id="np4" onclick="jumpTo(4)"><div class="npill-dot" style="background:var(--brown)"></div><span class="npill-lbl">ВНД</span></div>
+      <div class="npill" id="np5" onclick="jumpTo(5)"><div class="npill-dot" style="background:var(--violet)"></div><span class="npill-lbl">PR</span></div>
     </div>
   </div>
 </div>
 
 <div class="sec" id="s0">
-  <div class="eyebrow"><div class="eye-dot" id="ed0"></div><span id="ey0">Поиск инноваций · Насмотренность</span></div>
-  <div class="sec-title" id="title0"><em id="em0">—</em> в проработке</div>
+  <div class="eyebrow"><div class="eye-dot" id="ed0"></div><span id="ey0">Бюджет · Исполнение</span></div>
+  <div class="sec-title" id="title0"><em id="em0">—</em> потрачено</div>
   <div id="content0"></div>
 </div>
 
 <div class="sec" id="s1">
-  <div class="eyebrow"><div class="eye-dot" id="ed1"></div><span id="ey1">Конвейер пилотных проектов</span></div>
-  <div class="sec-title"><em id="em1">—</em> в работе</div>
+  <div class="eyebrow"><div class="eye-dot" id="ed1"></div><span id="ey1">Поиск инноваций · Насмотренность</span></div>
+  <div class="sec-title" id="title1"><em id="em1">—</em> в проработке</div>
   <div id="content1"></div>
 </div>
 
 <div class="sec" id="s2">
-  <div class="eyebrow"><div class="eye-dot" id="ed2"></div><span id="ey2">Инфраструктура · Песочница ЦИР</span></div>
-  <div class="sec-title"><em id="em2">Обогащение</em> песочницы ЦИР</div>
+  <div class="eyebrow"><div class="eye-dot" id="ed2"></div><span id="ey2">Конвейер пилотных проектов</span></div>
+  <div class="sec-title"><em id="em2">—</em> в работе</div>
   <div id="content2"></div>
 </div>
 
 <div class="sec" id="s3">
-  <div class="eyebrow"><div class="eye-dot" id="ed3"></div><span id="ey3">Методология Акселератора</span></div>
-  <div class="sec-title"><em id="em3">ВНД</em> · <span id="vnd-title">—</span></div>
+  <div class="eyebrow"><div class="eye-dot" id="ed3"></div><span id="ey3">Инфраструктура · Песочница ЦИР</span></div>
+  <div class="sec-title"><em id="em3">Обогащение</em> песочницы ЦИР</div>
   <div id="content3"></div>
 </div>
 
 <div class="sec" id="s4">
-  <div class="eyebrow"><div class="eye-dot" id="ed4"></div><span id="ey4">Продвижение Акселератора</span></div>
-  <div class="sec-title"><em id="em4">В фокусе</em> · <span id="pr-focus">—</span></div>
+  <div class="eyebrow"><div class="eye-dot" id="ed4"></div><span id="ey4">Методология Акселератора</span></div>
+  <div class="sec-title"><em id="em4">ВНД</em> · <span id="vnd-title">—</span></div>
   <div id="content4"></div>
+</div>
+
+<div class="sec" id="s5">
+  <div class="eyebrow"><div class="eye-dot" id="ed5"></div><span id="ey5">Продвижение Акселератора</span></div>
+  <div class="sec-title"><em id="em5">В фокусе</em> · <span id="pr-focus">—</span></div>
+  <div id="content5"></div>
 </div>
 
 </div>
 
 <script>
 const SECS = [
+  { acc:'#ff7a59', rgb:'255,122,89', icon:'💰',
+    amb:'radial-gradient(ellipse 110% 65% at 50% -10%, rgba(255,122,89,.20) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 85% 90%, rgba(200,70,30,.09) 0%, transparent 50%), #07070a' },
   { acc:'#2db8f5', rgb:'45,184,245', icon:'🔭',
     amb:'radial-gradient(ellipse 110% 65% at 50% -10%, rgba(45,184,245,.22) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 85% 90%, rgba(0,120,200,.10) 0%, transparent 50%), #07070a' },
   { acc:'#0ae448', rgb:'10,228,72',  icon:'⚙️',
@@ -283,7 +308,7 @@ const STAGE_STYLE = {
   'Завершение':      { bg:'rgba(254,197,251,.08)',    color:'#fec5fb',       border:'rgba(254,197,251,.2)',    glow:'pink' },
 };
 
-const secEls = [0,1,2,3,4].map(i => document.getElementById('s'+i));
+const secEls = [0,1,2,3,4,5].map(i => document.getElementById('s'+i));
 let cur = -1;
 
 function apply(idx) {
@@ -302,7 +327,7 @@ function apply(idx) {
   wt.style.borderColor = `rgba(${s.rgb},.32)`;
   wt.style.color = s.acc;
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     const np = document.getElementById('np'+i);
     const si = SECS[i];
     if (i === idx) {
@@ -318,7 +343,7 @@ function apply(idx) {
     }
   }
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     const si = SECS[i];
     const ey = document.getElementById('ey'+i);
     const em = document.getElementById('em'+i);
@@ -357,7 +382,7 @@ function apply(idx) {
 
   document.querySelectorAll('.pcard').forEach(c => {
     const glow = c.dataset.glow;
-    if (idx !== 1) { c.style.borderColor='rgba(255,255,255,0.07)'; c.style.boxShadow='none'; return; }
+    if (idx !== 2) { c.style.borderColor='rgba(255,255,255,0.07)'; c.style.boxShadow='none'; return; }
     if (glow === 'green') { c.style.borderColor='rgba(10,228,72,.13)'; c.style.boxShadow='0 0 10px rgba(10,228,72,.05)'; }
     else if (glow === 'pink') { c.style.borderColor='rgba(254,197,251,.15)'; c.style.boxShadow='0 0 11px rgba(254,197,251,.07)'; }
     else if (glow === 'blue') { c.style.borderColor='rgba(45,184,245,.13)'; c.style.boxShadow='0 0 10px rgba(45,184,245,.05)'; }
@@ -386,7 +411,7 @@ function filterPilots(mode, btn) {
     t.classList.remove('on'); t.style.background=''; t.style.color=''; t.style.borderColor='';
   });
   btn.classList.add('on');
-  btn.style.background = SECS[1].acc;
+  btn.style.background = SECS[2].acc;
   btn.style.color = '#000';
   btn.style.borderColor = 'transparent';
   document.querySelectorAll('#pilotsList .pcard').forEach(c => {
@@ -424,6 +449,12 @@ function fmtArtifact(text) {
   ).join('');
 }
 
+function fmtNum(v) {
+  let s = v.toFixed(2);
+  if (s.endsWith('0')) s = s.slice(0, -1);
+  return s.replace('.', ',');
+}
+
 const MONTHS = {'января':'Январь','февраля':'Февраль','марта':'Март','апреля':'Апрель','мая':'Май','июня':'Июнь','июля':'Июль','августа':'Август','сентября':'Сентябрь','октября':'Октябрь','ноября':'Ноябрь','декабря':'Декабрь'};
 function fmtWeekTag(week, dateStr) {
   const [, mon, year] = dateStr.split(' ');
@@ -435,18 +466,59 @@ function stageBadge(stage) {
   return `<span class="badge" style="background:${st.bg};color:${st.color};border-color:${st.border}">${stage}</span>`;
 }
 
+function renderBudget(d) {
+  const b = d.budget;
+  const t = b.total;
+  document.getElementById('em0').textContent = `${fmtNum(t.spent_pct)}%`;
+
+  const qrow = (q, v, color) => `
+    <div class="brow">
+      <span class="blbl">${q}</span>
+      <div class="btrack"><div class="bbar" style="width:${v.planned > 0 ? Math.min(v.spent / v.planned * 100, 100) : 0}%;background:${color}"></div></div>
+      <span class="bval">${fmtNum(v.spent)} / ${fmtNum(v.planned)} млн</span>
+    </div>`;
+
+  const catBlock = (title, cat, color) => `
+    <div class="budgetcat" data-s="0">
+      <div class="budgetcat-ttl">${title}</div>
+      ${qrow('Q1', cat.q1, color)}
+      ${qrow('Q2', cat.q2, color)}
+      ${qrow('Q3', cat.q3, color)}
+      ${qrow('Q4', cat.q4, color)}
+    </div>`;
+
+  const html = `
+    <div class="sec-label">Всего бюджет</div>
+    <div class="btotal-n">${fmtNum(t.budget)} млн</div>
+    <div class="stat2" style="margin-bottom:20px">
+      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+        <div class="stat2-n" style="flex-shrink:0;font-size:36px;line-height:1;color:var(--coral)">${fmtNum(t.spent)}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.3">млн потрачено<br>${fmtNum(t.spent_pct)}%</div>
+      </div>
+      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+        <div class="stat2-n" style="flex-shrink:0;font-size:36px;line-height:1">${fmtNum(t.remaining)}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.3">млн остаток<br>${fmtNum(t.remaining_pct)}%</div>
+      </div>
+    </div>
+    ${catBlock('CAPEX', b.capex, 'var(--coral)')}
+    ${catBlock('OPEX', b.opex, 'var(--coral)')}
+    ${catBlock('ФОТ', b.fot, 'var(--coral)')}`;
+
+  document.getElementById('content0').innerHTML = html;
+}
+
 function renderSearch(d) {
   const total = (d.active?.length || 0) + (d.control?.length || 0);
-  document.getElementById('em0').textContent = `${d.search.innovations_week} решений`;
+  document.getElementById('em1').textContent = `${d.search.innovations_week} решений`;
   document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
 
   let html = `
     <div class="stat2">
-      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="1" style="display:flex;align-items:center;justify-content:center;gap:14px">
         <div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1;color:var(--blue)">${d.search.innovations_week}</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.3">инноваций<br>на неделе</div>
       </div>
-      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="1" style="display:flex;align-items:center;justify-content:center;gap:14px">
         <div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1">${d.search.innovations_base}</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.3">инновационных<br>решений в базе</div>
       </div>
@@ -458,7 +530,7 @@ function renderSearch(d) {
   }
   searchItems.forEach(item => {
     html += `
-    <div class="icard" data-s="0">
+    <div class="icard" data-s="1">
       <div class="icard-name">${item.name}</div>
       ${item.desc ? `<div class="icard-desc">${item.desc}</div>` : ''}
       <div class="icard-divider"></div>
@@ -474,13 +546,13 @@ function renderSearch(d) {
       </div>
     </div>`;
   });
-  document.getElementById('content0').innerHTML = html;
+  document.getElementById('content1').innerHTML = html;
 }
 
 function renderPilots(d) {
   const f = d.pilots.funnel;
   const total = f.entry + f.waiting + f.assembly + f.testing + f.completion;
-  document.getElementById('em1').textContent = `${total} пилотов`;
+  document.getElementById('em2').textContent = `${total} пилотов`;
 
   const activePilotsFull = IS_NEW ? d.pilots.active.filter(p => p.done) : d.pilots.active;
   // On -new: active pilots without updates this week fall into control
@@ -491,7 +563,7 @@ function renderPilots(d) {
   const controlCount = controlPilotsFull.length;
 
   let html = `
-    <div class="funnel" data-s="1">
+    <div class="funnel" data-s="2">
       <div class="funnel-ttl">Конвейер пилотов</div>
       <div class="frow"><span class="flbl">Вход в конвейер</span><div class="ftrack"><div class="fbar" style="width:${Math.max(f.entry/total*100,5)}%;background:rgba(255,255,255,0.2)">${f.entry}</div></div><span class="fd" style="color:var(--muted)">${f.entry}</span></div>
       <div class="frow"><span class="flbl">Ожидание</span><div class="ftrack"><div class="fbar" style="width:${Math.max(f.waiting/total*100,5)}%;background:rgba(255,255,255,0.15)">${f.waiting}</div></div><span class="fd" style="color:var(--muted)">${f.waiting}</span></div>
@@ -547,7 +619,7 @@ function renderPilots(d) {
   });
 
   html += `</div>`;
-  document.getElementById('content1').innerHTML = html;
+  document.getElementById('content2').innerHTML = html;
 }
 
 function renderInfra(d) {
@@ -560,9 +632,9 @@ function renderInfra(d) {
   ).join('');
 
   const infraEmpty = IS_NEW && inf.done.length === 0;
-  document.getElementById('content2').innerHTML = infraEmpty
+  document.getElementById('content3').innerHTML = infraEmpty
     ? `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений</div>`
-    : `<div class="icard" data-s="2">
+    : `<div class="icard" data-s="3">
       <div class="icard-name">${inf.title}</div>
       <div class="icard-divider"></div>
       <div class="icard-row">
@@ -585,7 +657,7 @@ function renderVND(d) {
   let html = '';
   if (v.no_data) {
     html = `
-      <div class="icard" data-s="3">
+      <div class="icard" data-s="4">
         <div class="icard-name" style="color:var(--muted)">Нет новых данных</div>
         <div class="icard-desc">${v.no_data_reason || ''}</div>
       </div>`;
@@ -594,7 +666,7 @@ function renderVND(d) {
   } else {
     v.items.forEach(item => {
       html += `
-        <div class="icard" data-s="3">
+        <div class="icard" data-s="4">
           <div class="icard-name">${item.name}</div>
           <div class="icard-divider"></div>
           <div class="icard-row">
@@ -610,7 +682,7 @@ function renderVND(d) {
         </div>`;
     });
   }
-  document.getElementById('content3').innerHTML = html;
+  document.getElementById('content4').innerHTML = html;
 }
 
 function renderPR(d) {
@@ -626,7 +698,7 @@ function renderPR(d) {
   let cards = prCards.length === 0 && IS_NEW
     ? `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений</div>`
     : prCards.map(c => `
-    <div class="icard" data-s="4">
+    <div class="icard" data-s="5">
       <div class="icard-name">${c.name}</div>
       <div class="icard-divider"></div>
       <div class="icard-row">
@@ -656,25 +728,25 @@ function renderPR(d) {
       </div>`;
   }
 
-  document.getElementById('content4').innerHTML = `
+  document.getElementById('content5').innerHTML = `
     <div class="sec-label">Активность в СМИ</div>
     <div class="stat2" style="margin-bottom:20px">
-      <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="5" style="display:flex;align-items:center;justify-content:center;gap:14px">
         ${numColor(pr.media_internal, 'var(--violet)')}
         <div style="font-size:13px;color:var(--muted);line-height:1.3">публикации<br>внутренние</div>
       </div>
-      <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="5" style="display:flex;align-items:center;justify-content:center;gap:14px">
         ${numColor(pr.media_external, 'var(--violet)')}
         <div style="font-size:13px;color:var(--muted);line-height:1.3">публикации<br>внешние</div>
       </div>
     </div>
     <div class="sec-label">Сообщество ЦИР на Ньютоне</div>
     <div class="stat2" style="margin-bottom:24px">
-      <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="5" style="display:flex;align-items:center;justify-content:center;gap:14px">
         ${numColor(pr.community_new, 'var(--violet)')}
         <div style="font-size:13px;color:var(--muted);line-height:1.3">новых<br>за неделю</div>
       </div>
-      <div class="stat2-card" data-s="4" style="display:flex;align-items:center;justify-content:center;gap:14px">
+      <div class="stat2-card" data-s="5" style="display:flex;align-items:center;justify-content:center;gap:14px">
         ${numColor(pr.community_total, 'var(--violet)')}
         <div style="font-size:13px;color:var(--muted);line-height:1.3">сейчас в<br>сообществе</div>
       </div>
@@ -692,6 +764,7 @@ async function loadData() {
 
   document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
 
+  renderBudget(d);
   renderSearch(d);
   renderPilots(d);
   renderInfra(d);
