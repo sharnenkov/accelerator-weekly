@@ -406,6 +406,18 @@ export default async function handler(req, res) {
 
   const cleanText = text.replace(new RegExp(`@${BOT_USERNAME}`, 'gi'), '').trim();
 
+  // /msg <chat_id> <text> — admin-only: send a message to any chat the bot is in
+  if (cleanText.startsWith('/msg ') && userId === '732508798') {
+    const parts = cleanText.slice(5).match(/^(-?\d+)\s+([\s\S]+)$/);
+    if (parts) {
+      await tgSend(parts[1], parts[2]);
+      await tgSend(chatId, '✅ Отправлено');
+    } else {
+      await tgSend(chatId, 'Формат: /msg <chat_id> <текст>');
+    }
+    return res.status(200).json({ ok: true });
+  }
+
   // /id — show chat and user IDs (useful for setup)
   if (cleanText === '/id' || cleanText === '/chatid') {
     await tgSend(chatId, `🔍 <b>ID чата:</b> <code>${chatId}</code>\n👤 <b>Ваш user ID:</b> <code>${userId}</code>`);
