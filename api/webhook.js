@@ -410,10 +410,16 @@ export default async function handler(req, res) {
   if (cleanText.startsWith('/msg ') && userId === '732508798') {
     const parts = cleanText.slice(5).match(/^(-?\d+)\s+([\s\S]+)$/);
     if (parts) {
-      await tgSend(parts[1], parts[2]);
-      await tgSend(chatId, '✅ Отправлено');
+      const [, targetChatId, msgText] = parts;
+      if (!conversations[userId]) conversations[userId] = { messages: [], pendingPatch: null, editMode: false };
+      conversations[userId].pendingMsg = { targetChatId, msgText };
+      await saveState(conversations, stateSha);
+      await tgSend(chatId,
+        `📋 <b>Превью сообщения</b> → чат <code>${targetChatId}</code>:\n\n${msgText}\n\n` +
+        `<i>Ответьте <b>да</b> — отправить, <b>нет</b> — отмена</i>`
+      );
     } else {
-      await tgSend(chatId, 'Формат: /msg <chat_id> <текст>');
+      await tgSend(chatId, 'Формат: /msg &lt;chat_id&gt; &lt;текст&gt;');
     }
     return res.status(200).json({ ok: true });
   }
@@ -437,6 +443,24 @@ export default async function handler(req, res) {
   const conv = conversations[userId];
 
   const lc = cleanText.toLowerCase().trim();
+
+  // ── Handle pending /msg confirmation ─────────────────────────────────────
+  if (conv.pendingMsg) {
+    const isSave = SAVE_WORDS.some(w => lc === w);
+    const isEdit = EDIT_WORDS.some(w => lc === w);
+    if (isSave) {
+      const { targetChatId, msgText } = conv.pendingMsg;
+      conv.pendingMsg = null;
+      await saveState(conversations, stateSha);
+      await tgSend(targetChatId, msgText);
+      await tgSend(chatId, '✅ Отправлено');
+    } else if (isEdit) {
+      conv.pendingMsg = null;
+      await saveState(conversations, stateSha);
+      await tgSend(chatId, '❌ Отменено');
+    }
+    return res.status(200).json({ ok: true });
+  }
 
   // ── Handle pending confirmation ───────────────────────────────────────────
   if (conv.pendingPatch) {
