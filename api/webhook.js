@@ -133,6 +133,27 @@ function previewPatch(patch, data) {
       });
   }
 
+  if (patch.budget) {
+    const b = patch.budget;
+    if (b.total) {
+      const t = b.total;
+      const parts = [];
+      if (t.spent     !== undefined) parts.push(`факт ${t.spent} млн`);
+      if (t.spent_pct !== undefined) parts.push(`${t.spent_pct}%`);
+      if (t.remaining !== undefined) parts.push(`остаток ${t.remaining} млн`);
+      lines.push(`💰 <b>Бюджет TOTAL:</b> ${parts.join(' · ')}`);
+    }
+    ['capex','opex','fot'].forEach(cat => {
+      if (!b[cat]) return;
+      Object.entries(b[cat]).forEach(([q, v]) => {
+        const parts = [];
+        if (v.spent   !== undefined) parts.push(`факт ${v.spent}`);
+        if (v.planned !== undefined) parts.push(`план ${v.planned}`);
+        lines.push(`  ${cat.toUpperCase()} ${q.toUpperCase()}: ${parts.join(' / ')}`);
+      });
+    });
+  }
+
   if (patch.pr) {
     if (patch.pr.focus)           lines.push(`📣 <b>PR фокус:</b> ${patch.pr.focus}`);
     if (patch.pr.community_total) lines.push(`    Сообщество: ${patch.pr.community_total}`);
@@ -202,6 +223,11 @@ ${userLine}
   · если обновлений нет — указать причину (отпуск, нет встреч и т.д.)
   · если есть — название документа, что сделано, артефакт
 
+💰 <b>Бюджет</b> — исполнение бюджета АИ (данные нарастающим итогом, не сбрасываются):
+  · Обновить общие данные (TOTAL): потраченную сумму, %, остаток
+  · Обновить квартальные данные по CAPEX / OPEX / ФОТ: факт и план по нужному кварталу
+  · Все суммы в млн руб.
+
 📣 <b>PR</b> — продвижение:
   · публикации внутренние и внешние (количество)
   · прирост сообщества ЦИР на Ньютоне и общее число
@@ -247,6 +273,9 @@ CONFIRM: <что обновлено>
 · Поиск (счётчик): { "search": { "innovations_week": 6 } }
 · Новая карточка поиска: { "search": { "items": [{ "id": "newid", "name": "...", "desc": "...", "done": "05.07 — ...", "artifact": "..." }] } }
 · ВНД нет данных: { "vnd": { "no_data": true, "no_data_reason": "Отпуск: Иванов" } }
+· Бюджет TOTAL: { "budget": { "total": { "spent": 55.0, "spent_pct": 15.7, "remaining": 294.9, "remaining_pct": 84.3 } } }
+· Бюджет квартал: { "budget": { "opex": { "q3": { "spent": 5.2 } } } }
+· Бюджет ФОТ квартал: { "budget": { "fot": { "q3": { "spent": 12.5, "planned": 40.2 } } } }
 
 ━━━ РЕЖИМ ПРАВКИ ($set) ━━━
 Если пользователь хочет ИСПРАВИТЬ (а не дополнить) уже записанный текст — используй флаг "$set": true:
@@ -318,6 +347,24 @@ function applyPatch(data, patch) {
       if (val.items) d.vnd.items = [...(d.vnd.items || []), ...[].concat(val.items)];
       for (const [f, v] of Object.entries(val)) {
         if (f !== 'items') d.vnd[f] = v;
+      }
+
+    } else if (key === 'budget' && typeof val === 'object') {
+      if (!d.budget) d.budget = {};
+      for (const [section, sectionVal] of Object.entries(val)) {
+        if (!d.budget[section]) d.budget[section] = {};
+        if (typeof sectionVal === 'object' && !Array.isArray(sectionVal)) {
+          for (const [subKey, subVal] of Object.entries(sectionVal)) {
+            if (typeof subVal === 'object' && !Array.isArray(subVal) && typeof d.budget[section][subKey] === 'object') {
+              // Quarter-level: merge individual fields (spent, planned) without losing the other
+              Object.assign(d.budget[section][subKey], subVal);
+            } else {
+              d.budget[section][subKey] = subVal;
+            }
+          }
+        } else {
+          d.budget[section] = sectionVal;
+        }
       }
 
     } else if (typeof val === 'object' && !Array.isArray(val) && val !== null && typeof d[key] === 'object') {
