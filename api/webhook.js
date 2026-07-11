@@ -406,6 +406,12 @@ export default async function handler(req, res) {
 
   const cleanText = text.replace(new RegExp(`@${BOT_USERNAME}`, 'gi'), '').trim();
 
+  // /id — show chat and user IDs (useful for setup)
+  if (cleanText === '/id' || cleanText === '/chatid') {
+    await tgSend(chatId, `🔍 <b>ID чата:</b> <code>${chatId}</code>\n👤 <b>Ваш user ID:</b> <code>${userId}</code>`);
+    return res.status(200).json({ ok: true });
+  }
+
   if (ALLOWED_IDS.length > 0 && !ALLOWED_IDS.includes(userId)) {
     await tgSend(chatId, '⛔ Нет доступа.');
     return res.status(200).json({ ok: true });
