@@ -540,16 +540,30 @@ function renderSearch(d) {
       <div class="icard-name">${item.name}</div>
       ${item.desc ? `<div class="icard-desc">${item.desc}</div>` : ''}
       <div class="icard-divider"></div>
+      ${item.done ? `
       <div class="icard-row">
         <div class="icard-field">
           <div class="icard-label">Что сделано на неделе</div>
-          <div class="icard-val">${item.done}</div>
+          <div class="icard-val">${fmtArtifact(item.done)}</div>
         </div>
-      </div>
+      </div>` : ''}
+      ${item.plan ? `
+      <div class="icard-row" style="margin-top:10px">
+        <div class="icard-field">
+          <div class="icard-label">План на следующую неделю</div>
+          <div class="icard-val">${fmtArtifact(item.plan)}</div>
+        </div>
+      </div>` : ''}
+      ${item.artifact ? `
       <div class="icard-artifact">
         <div class="icard-label">Артефакт</div>
-        <div class="icard-val">${item.artifact}</div>
-      </div>
+        <div class="icard-val">${fmtArtifact(item.artifact)}</div>
+      </div>` : ''}
+      ${item.risks ? `
+      <div class="icard-artifact" style="margin-top:10px">
+        <div class="icard-label">Риски / блокеры</div>
+        <div class="icard-val">${fmtArtifact(item.risks)}</div>
+      </div>` : ''}
     </div>`;
   });
   document.getElementById('content1').innerHTML = html;
@@ -722,16 +736,30 @@ function renderPR(d) {
     <div class="icard" data-s="5">
       <div class="icard-name">${c.name}</div>
       <div class="icard-divider"></div>
+      ${c.done ? `
       <div class="icard-row">
         <div class="icard-field">
           <div class="icard-label">Что сделано на неделе</div>
-          <div class="icard-val">${c.done}</div>
+          <div class="icard-val">${fmtArtifact(c.done)}</div>
         </div>
-      </div>
+      </div>` : ''}
+      ${c.plan ? `
+      <div class="icard-row" style="margin-top:10px">
+        <div class="icard-field">
+          <div class="icard-label">План на следующую неделю</div>
+          <div class="icard-val">${fmtArtifact(c.plan)}</div>
+        </div>
+      </div>` : ''}
+      ${c.artifact ? `
       <div class="icard-artifact">
         <div class="icard-label">Артефакт</div>
-        <div class="icard-val">${c.artifact}</div>
-      </div>
+        <div class="icard-val">${fmtArtifact(c.artifact)}</div>
+      </div>` : ''}
+      ${c.risks ? `
+      <div class="icard-artifact" style="margin-top:10px">
+        <div class="icard-label">Риски / блокеры</div>
+        <div class="icard-val">${fmtArtifact(c.risks)}</div>
+      </div>` : ''}
     </div>`).join('');
 
   let eventBlock = '';
