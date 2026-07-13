@@ -308,6 +308,12 @@ const STAGE_STYLE = {
   'Завершение':      { bg:'rgba(254,197,251,.08)',    color:'#fec5fb',       border:'rgba(254,197,251,.2)',    glow:'pink' },
 };
 
+const OWNERS = {
+  'А': { name:'Алексей Шарненков', color:'#0ae448' },
+  'П': { name:'Полина Сухорукова', color:'#2db8f5' },
+  'Н': { name:'Надежда Мудрая',    color:'#f5c842' },
+};
+
 const secEls = [0,1,2,3,4,5].map(i => document.getElementById('s'+i));
 let cur = -1;
 
@@ -549,6 +555,53 @@ function renderSearch(d) {
   document.getElementById('content1').innerHTML = html;
 }
 
+function ownerLine(code) {
+  const o = OWNERS[code];
+  if (!o) return '';
+  return `<div style="display:flex;align-items:center;gap:6px;margin-top:5px">
+    <div style="width:14px;height:14px;border-radius:50%;background:${o.color};flex-shrink:0"></div>
+    <span style="font-size:11px;color:var(--muted)">${o.name}</span>
+  </div>`;
+}
+
+function pilotCard(p, pw) {
+  const st = STAGE_STYLE[p.stage] || STAGE_STYLE['Вход в конвейер'];
+  const hidden = pw === 'control' ? ' style="display:none"' : '';
+  const risk = (p.risks || '').trim();
+  const riskCalm = !risk || /риски отсутствуют/i.test(risk);
+  return `
+      <div class="pcard" data-pw="${pw}" data-glow="${st.glow || ''}"${hidden}>
+        <div class="pcard-top">
+          <div style="min-width:0">
+            <span class="pcard-name">${p.id} · ${p.name}</span>
+            ${ownerLine(p.owner)}
+          </div>
+          ${stageBadge(p.stage)}
+        </div>
+        <div class="pcard-divider"></div>
+        ${p.done ? `
+        <div class="pcard-field">
+          <div class="pcard-label">Что сделано на неделе</div>
+          <div class="pcard-val">${fmtArtifact(p.done)}</div>
+        </div>` : ''}
+        ${p.plan ? `
+        <div class="pcard-field">
+          <div class="pcard-label">План на следующую неделю</div>
+          <div class="pcard-val">${fmtArtifact(p.plan)}</div>
+        </div>` : ''}
+        ${p.artifact ? `
+        <div class="pcard-result">
+          <div class="pcard-label">Артефакты</div>
+          <div class="pcard-val">${fmtArtifact(p.artifact)}</div>
+        </div>` : ''}
+        ${risk ? `
+        <div class="pcard-result" style="${riskCalm ? '' : 'background:rgba(226,75,74,.1);border-color:rgba(226,75,74,.28)'};margin-top:10px">
+          <div class="pcard-label" style="${riskCalm ? '' : 'color:#e88b8a'}">Риски / блокеры</div>
+          <div class="pcard-val">${fmtArtifact(risk)}</div>
+        </div>` : ''}
+      </div>`;
+}
+
 function renderPilots(d) {
   const f = d.pilots.funnel;
   const total = f.entry + f.waiting + f.assembly + f.testing + f.completion;
@@ -583,40 +636,8 @@ function renderPilots(d) {
   if (IS_NEW && activePilots.length === 0) {
     html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений по пилотам</div>`;
   }
-  activePilots.forEach(p => {
-    const st = STAGE_STYLE[p.stage] || STAGE_STYLE['Вход в конвейер'];
-    html += `
-      <div class="pcard" data-pw="active" data-glow="${st.glow}">
-        <div class="pcard-top">
-          <span class="pcard-name">${p.id} · ${p.name}</span>
-          ${stageBadge(p.stage)}
-        </div>
-        <div class="pcard-divider"></div>
-        <div class="pcard-field">
-          <div class="pcard-label">Что сделано на неделе</div>
-          <div class="pcard-val">${p.done}</div>
-        </div>
-        <div class="pcard-result">
-          <div class="pcard-label">Артефакты</div>
-          <div class="pcard-val">${fmtArtifact(p.artifact)}</div>
-        </div>
-      </div>`;
-  });
-
-  controlPilots.forEach(p => {
-    html += `
-      <div class="pcard" data-pw="control" data-glow="" style="display:none">
-        <div class="pcard-top">
-          <span class="pcard-name">${p.id} · ${p.name}</span>
-          ${stageBadge(p.stage)}
-        </div>
-        <div class="pcard-divider"></div>
-        <div class="pcard-result">
-          <div class="pcard-label">Артефакты</div>
-          <div class="pcard-val">${fmtArtifact(p.artifact)}</div>
-        </div>
-      </div>`;
-  });
+  activePilots.forEach(p => { html += pilotCard(p, 'active'); });
+  controlPilots.forEach(p => { html += pilotCard(p, 'control'); });
 
   html += `</div>`;
   document.getElementById('content2').innerHTML = html;
