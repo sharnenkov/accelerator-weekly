@@ -515,15 +515,24 @@ function renderBudget(d) {
 
 function renderSearch(d) {
   const total = (d.active?.length || 0) + (d.control?.length || 0);
-  document.getElementById('em1').textContent = `${d.search.innovations_week} решений`;
+  const hasWeekCount = d.search.innovations_week > 0;
+  document.getElementById('title1').innerHTML = hasWeekCount
+    ? `<em id="em1">${d.search.innovations_week} решений</em> в проработке`
+    : `<em id="em1">Поиск инноваций</em>`;
   document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
 
-  let html = `
+  let html = hasWeekCount ? `
     <div class="stat2">
       <div class="stat2-card" data-s="1" style="display:flex;align-items:center;justify-content:center;gap:14px">
         <div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1;color:var(--blue)">${d.search.innovations_week}</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.3">инноваций<br>на неделе</div>
       </div>
+      <div class="stat2-card" data-s="1" style="display:flex;align-items:center;justify-content:center;gap:14px">
+        <div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1">${d.search.innovations_base}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.3">инновационных<br>решений в базе</div>
+      </div>
+    </div>` : `
+    <div class="stat2" style="grid-template-columns:1fr">
       <div class="stat2-card" data-s="1" style="display:flex;align-items:center;justify-content:center;gap:14px">
         <div class="stat2-n" style="flex-shrink:0;font-size:44px;line-height:1">${d.search.innovations_base}</div>
         <div style="font-size:13px;color:var(--muted);line-height:1.3">инновационных<br>решений в базе</div>
