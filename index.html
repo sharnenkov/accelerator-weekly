@@ -587,9 +587,9 @@ function ownerLine(code) {
   </div>`;
 }
 
-function pilotCard(p, pw) {
+function pilotCard(p, pw, visible) {
   const st = STAGE_STYLE[p.stage] || STAGE_STYLE['Вход в конвейер'];
-  const hidden = pw === 'control' ? ' style="display:none"' : '';
+  const hidden = visible ? '' : ' style="display:none"';
   const risk = (p.risks || '').trim();
   const riskCalm = !risk || /риски отсутствуют/i.test(risk);
   return `
@@ -646,21 +646,28 @@ function renderPilots(d) {
       <div class="frow"><span class="flbl">Комплектация</span><div class="ftrack"><div class="fbar" style="width:${Math.max(f.assembly/total*100,5)}%;background:var(--blue)">${f.assembly}</div></div><span class="fd" style="color:var(--blue)">${f.assembly}</span></div>
       <div class="frow"><span class="flbl">Тестирование</span><div class="ftrack"><div class="fbar" style="width:${Math.max(f.testing/total*100,5)}%;background:var(--green)">${f.testing}</div></div><span class="fd" style="color:var(--green)">${f.testing}</span></div>
       <div class="frow"><span class="flbl">Завершение</span><div class="ftrack"><div class="fbar" style="width:${Math.max(f.completion/total*100,5)}%;background:#fec5fb">${f.completion}</div></div><span class="fd" style="color:var(--muted)">${f.completion}</span></div>
-    </div>
+    </div>`;
+
+  const showTabs = activeCount > 0;
+  if (showTabs) {
+    html += `
     <div class="tabs2">
       <button class="tab2 on" id="tab-active" onclick="filterPilots('active',this)">Активная работа · ${activeCount}</button>
       <button class="tab2" id="tab-control" onclick="filterPilots('control',this)">Контроль · ${controlCount}</button>
-    </div>
-    <div id="pilotsList">`;
+    </div>`;
+  } else {
+    html += `<div class="sec-label">Пилоты на контроле · ${controlCount}</div>`;
+  }
+  html += `<div id="pilotsList">`;
 
   const activePilots = activePilotsFull;
   const controlPilots = controlPilotsFull;
 
-  if (IS_NEW && activePilots.length === 0) {
+  if (IS_NEW && showTabs && activePilots.length === 0) {
     html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений по пилотам</div>`;
   }
-  activePilots.forEach(p => { html += pilotCard(p, 'active'); });
-  controlPilots.forEach(p => { html += pilotCard(p, 'control'); });
+  activePilots.forEach(p => { html += pilotCard(p, 'active', showTabs); });
+  controlPilots.forEach(p => { html += pilotCard(p, 'control', !showTabs); });
 
   html += `</div>`;
   document.getElementById('content2').innerHTML = html;
