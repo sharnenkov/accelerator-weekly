@@ -58,27 +58,69 @@
   "meta": {
     "week": 29,
     "date": "5 июля 2026",
-    "updated": "2026-07-13T06:12:01.358Z"
+    "updated": "2026-07-19T19:29:39.369Z"
   },
   "budget": {
-    "total": { "budget": 349.9, "spent": 42.5, "spent_pct": 12.2, "remaining": 307.4, "remaining_pct": 87.7 },
+    "total": {
+      "budget": 349.9,
+      "spent": 42.5,
+      "spent_pct": 12.2,
+      "remaining": 307.4,
+      "remaining_pct": 87.7
+    },
     "capex": {
-      "q1": { "spent": 0.0, "planned": 0.0 },
-      "q2": { "spent": 0.0, "planned": 0.0 },
-      "q3": { "spent": 0.0, "planned": 103.3 },
-      "q4": { "spent": 0.0, "planned": 30.0 }
+      "q1": {
+        "spent": 0,
+        "planned": 0
+      },
+      "q2": {
+        "spent": 0,
+        "planned": 0
+      },
+      "q3": {
+        "spent": 0,
+        "planned": 103.3
+      },
+      "q4": {
+        "spent": 0,
+        "planned": 30
+      }
     },
     "opex": {
-      "q1": { "spent": 0.55, "planned": 0.56 },
-      "q2": { "spent": 0.6, "planned": 2.4 },
-      "q3": { "spent": 0.0, "planned": 39.6 },
-      "q4": { "spent": 0.0, "planned": 15.0 }
+      "q1": {
+        "spent": 0.55,
+        "planned": 0.56
+      },
+      "q2": {
+        "spent": 0.6,
+        "planned": 2.4
+      },
+      "q3": {
+        "spent": 0,
+        "planned": 39.6
+      },
+      "q4": {
+        "spent": 0,
+        "planned": 15
+      }
     },
     "fot": {
-      "q1": { "spent": 22.8, "planned": 39.4 },
-      "q2": { "spent": 24.9, "planned": 46.8 },
-      "q3": { "spent": 0.0, "planned": 40.2 },
-      "q4": { "spent": 0.0, "planned": 40.6 }
+      "q1": {
+        "spent": 22.8,
+        "planned": 39.4
+      },
+      "q2": {
+        "spent": 24.9,
+        "planned": 46.8
+      },
+      "q3": {
+        "spent": 0,
+        "planned": 40.2
+      },
+      "q4": {
+        "spent": 0,
+        "planned": 40.6
+      }
     }
   },
   "search": {
@@ -331,7 +373,17 @@
     "title": "Порядок работы Акселератора инноваций",
     "no_data": false,
     "no_data_reason": "",
-    "items": []
+    "items": [
+      {
+        "id": "vnd_1",
+        "name": "Обновленная версия ВНД",
+        "done": "17.07 — Исправлены замечания от БИБ и направлена на согласование · 17.07 — Исправлены замечания от ЮД и направлена на согласование · Ожидаем ОС от ДАР (письмо отправлено 15.07)",
+        "artifacts": [
+          "Задача в СУЗ",
+          "Письмо"
+        ]
+      }
+    ]
   },
   "pr": {
     "focus": "",
