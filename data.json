@@ -62,11 +62,11 @@
   },
   "budget": {
     "total": {
-      "budget": 349.9,
-      "spent": 42.5,
-      "spent_pct": 12.2,
-      "remaining": 307.4,
-      "remaining_pct": 87.7
+      "budget": 357.96,
+      "spent": 64.22,
+      "spent_pct": 18,
+      "remaining": 293.74,
+      "remaining_pct": 82
     },
     "capex": {
       "q1": {
@@ -78,8 +78,8 @@
         "planned": 0
       },
       "q3": {
-        "spent": 0,
-        "planned": 103.3
+        "spent": 0.13,
+        "planned": 103.36
       },
       "q4": {
         "spent": 0,
@@ -88,38 +88,38 @@
     },
     "opex": {
       "q1": {
-        "spent": 0.55,
-        "planned": 0.56
+        "spent": 0.56,
+        "planned": 0.57
       },
       "q2": {
-        "spent": 0.6,
-        "planned": 2.4
+        "spent": 0.67,
+        "planned": 1.63
       },
       "q3": {
         "spent": 0,
-        "planned": 39.6
+        "planned": 40.11
       },
       "q4": {
         "spent": 0,
-        "planned": 15
+        "planned": 15.29
       }
     },
     "fot": {
       "q1": {
-        "spent": 22.8,
-        "planned": 39.4
+        "spent": 22.74,
+        "planned": 39.39
       },
       "q2": {
-        "spent": 24.9,
-        "planned": 46.8
+        "spent": 40.12,
+        "planned": 43.26
       },
       "q3": {
-        "spent": 0,
-        "planned": 40.2
+        "spent": 0.01,
+        "planned": 37.66
       },
       "q4": {
         "spent": 0,
-        "planned": 40.6
+        "planned": 46.68
       }
     }
   },

@@ -61,24 +61,24 @@
     "updated": "2026-07-13T06:12:01.358Z"
   },
   "budget": {
-    "total": { "budget": 349.9, "spent": 42.5, "spent_pct": 12.2, "remaining": 307.4, "remaining_pct": 87.7 },
+    "total": { "budget": 357.96, "spent": 64.22, "spent_pct": 18, "remaining": 293.74, "remaining_pct": 82 },
     "capex": {
       "q1": { "spent": 0.0, "planned": 0.0 },
       "q2": { "spent": 0.0, "planned": 0.0 },
-      "q3": { "spent": 0.0, "planned": 103.3 },
+      "q3": { "spent": 0.13, "planned": 103.36 },
       "q4": { "spent": 0.0, "planned": 30.0 }
     },
     "opex": {
-      "q1": { "spent": 0.55, "planned": 0.56 },
-      "q2": { "spent": 0.6, "planned": 2.4 },
-      "q3": { "spent": 0.0, "planned": 39.6 },
-      "q4": { "spent": 0.0, "planned": 15.0 }
+      "q1": { "spent": 0.56, "planned": 0.57 },
+      "q2": { "spent": 0.67, "planned": 1.63 },
+      "q3": { "spent": 0.0, "planned": 40.11 },
+      "q4": { "spent": 0.0, "planned": 15.29 }
     },
     "fot": {
-      "q1": { "spent": 22.8, "planned": 39.4 },
-      "q2": { "spent": 24.9, "planned": 46.8 },
-      "q3": { "spent": 0.0, "planned": 40.2 },
-      "q4": { "spent": 0.0, "planned": 40.6 }
+      "q1": { "spent": 22.74, "planned": 39.39 },
+      "q2": { "spent": 40.12, "planned": 43.26 },
+      "q3": { "spent": 0.01, "planned": 37.66 },
+      "q4": { "spent": 0.0, "planned": 46.68 }
     }
   },
   "search": {
