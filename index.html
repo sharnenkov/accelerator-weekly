@@ -720,16 +720,30 @@ function renderVND(d) {
         <div class="icard" data-s="4">
           <div class="icard-name">${item.name}</div>
           <div class="icard-divider"></div>
+          ${item.done ? `
           <div class="icard-row">
             <div class="icard-field">
               <div class="icard-label">Что сделано на неделе</div>
-              <div class="icard-val">${item.done}</div>
+              <div class="icard-val">${fmtArtifact(item.done)}</div>
             </div>
-          </div>
+          </div>` : ''}
+          ${item.plan ? `
+          <div class="icard-row" style="margin-top:10px">
+            <div class="icard-field">
+              <div class="icard-label">План на следующую неделю</div>
+              <div class="icard-val">${fmtArtifact(item.plan)}</div>
+            </div>
+          </div>` : ''}
+          ${item.artifact ? `
           <div class="icard-artifact">
             <div class="icard-label">Артефакт</div>
-            <div class="icard-val">${item.artifact}</div>
-          </div>
+            <div class="icard-val">${fmtArtifact(item.artifact)}</div>
+          </div>` : ''}
+          ${item.risks ? `
+          <div class="icard-artifact" style="margin-top:10px">
+            <div class="icard-label">Риски / блокеры</div>
+            <div class="icard-val">${fmtArtifact(item.risks)}</div>
+          </div>` : ''}
         </div>`;
     });
   }
