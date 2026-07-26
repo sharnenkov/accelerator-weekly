@@ -63,9 +63,9 @@
   "budget": {
     "total": {
       "budget": 357.96,
-      "spent": 64.22,
+      "spent": 64.41,
       "spent_pct": 18,
-      "remaining": 293.74,
+      "remaining": 293.55,
       "remaining_pct": 82
     },
     "capex": {
@@ -96,7 +96,7 @@
         "planned": 1.63
       },
       "q3": {
-        "spent": 0.0,
+        "spent": 0.15,
         "planned": 40.11
       },
       "q4": {
@@ -114,7 +114,7 @@
         "planned": 43.26
       },
       "q3": {
-        "spent": 0.01,
+        "spent": 0.04,
         "planned": 37.66
       },
       "q4": {
