@@ -100,6 +100,8 @@ function previewPatch(patch, data) {
       const name = found ? `${found.id} · ${found.name}` : listPatch.find;
       lines.push(`🔹 <b>${name}</b> [${label}]${listPatch['$set'] ? ' <i>(замена)</i>' : ''}`);
       if (listPatch.update.done)     lines.push(`  Что сделано: ${listPatch.update.done}`);
+      if (listPatch.update.plan)     lines.push(`  План на следующую неделю: ${listPatch.update.plan}`);
+      if (listPatch.update.risks)    lines.push(`  Риски / блокеры: ${listPatch.update.risks}`);
       if (listPatch.update.artifact) lines.push(`  Артефакт: ${listPatch.update.artifact}`);
     }
   }
@@ -212,8 +214,11 @@ ${userLine}
 
 ⚙️ <b>Конвейер</b> — по каждому активному пилоту:
   · что сделано на неделе (встречи, решения, действия)
-  · артефакт (документ, план-график, БТ, отчёт)
-  Пилоты на контроле — только артефакт если есть изменение.
+  · план на следующую неделю (какие будут шаги, встречи)
+  · риски / блокеры (что может замедлить, требует решения)
+  · артефакт (документ, план-график, БТ, отчёт, результат)
+  · ответственный (код: А / П / Н)
+  Пилоты на контроле — артефакт и план если есть изменение.
 
 🏗️ <b>Инфра</b> — по инфраструктурному проекту:
   · список сделанного
@@ -266,8 +271,9 @@ PATCH:
 CONFIRM: <что обновлено>
 
 Примеры патчей:
-· Пилот активный: { "pilots": { "active": { "find": "АИ.П26.01", "update": { "done": "05.07 — Проведена встреча", "artifact": "Протокол встречи" } } } }
-· Пилот контроль: { "pilots": { "control": { "find": "АИ.П26.02", "update": { "artifact": "Финальный отчёт" } } } }
+· Пилот активный (полный): { "pilots": { "active": { "find": "АИ.П26.01", "update": { "owner": "А", "done": "05.07 — Проведена встреча", "plan": "Согласовать БТ с заказчиком", "risks": "Заказчик медлит", "artifact": "Протокол встречи" } } } }
+· Пилот активный (только done): { "pilots": { "active": { "find": "АИ.П26.01", "update": { "done": "08.07 — Финализирована БТ" } } } }
+· Пилот контроль: { "pilots": { "control": { "find": "АИ.П26.02", "update": { "plan": "Старт тестирования", "artifact": "Финальный отчёт" } } } }
 · Инфра (добавить): { "infra": { "done": ["05.07 — Настроен доступ к LLM"], "artifacts": ["Инструкция по подключению"] } }
 · PR: { "pr": { "community_total": 105 } }
 · Поиск (счётчик): { "search": { "innovations_week": 6 } }
@@ -276,6 +282,8 @@ CONFIRM: <что обновлено>
 · Бюджет TOTAL: { "budget": { "total": { "spent": 55.0, "spent_pct": 15.7, "remaining": 294.9, "remaining_pct": 84.3 } } }
 · Бюджет квартал: { "budget": { "opex": { "q3": { "spent": 5.2 } } } }
 · Бюджет ФОТ квартал: { "budget": { "fot": { "q3": { "spent": 12.5, "planned": 40.2 } } } }
+· Пилот owner: { "pilots": { "active": { "find": "АИ.П26.01", "update": { "owner": "А" } } } }
+· Пилот план + риски: { "pilots": { "active": { "find": "АИ.П26.27", "update": { "plan": "Провести встречу с заказчиком", "risks": "Риски отсутствуют" } } } }
 
 ━━━ РЕЖИМ ПРАВКИ ($set) ━━━
 Если пользователь хочет ИСПРАВИТЬ (а не дополнить) уже записанный текст — используй флаг "$set": true:
@@ -316,9 +324,11 @@ function applyPatch(data, patch) {
               pilot.artifact = '';
             }
             pilot.done = appendStr(pilot.done, newVal);
-          } else if (field === 'artifact' && typeof newVal === 'string') {
-            pilot.artifact = appendStr(pilot.artifact, newVal);
+          } else if ((field === 'artifact' || field === 'plan' || field === 'risks') && typeof newVal === 'string') {
+            // These fields accumulate through the week
+            pilot[field] = appendStr(pilot[field], newVal);
           } else {
+            // owner, stage, etc — replace
             pilot[field] = newVal;
           }
         }
