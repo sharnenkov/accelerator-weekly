@@ -332,6 +332,13 @@ function applyPatch(data, patch) {
             pilot[field] = newVal;
           }
         }
+
+        // Auto-promote: if pilot in control got new data (done/plan/risks), move to active
+        const hasNewData = pilot.done || pilot.plan || pilot.risks;
+        if (listKey === 'control' && hasNewData) {
+          d.pilots.control.splice(idx, 1);
+          d.pilots.active.push(pilot);
+        }
       }
 
     } else if (key === 'infra' && typeof val === 'object') {
