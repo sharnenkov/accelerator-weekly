@@ -63,6 +63,7 @@ jobs:
           const fresh = JSON.parse(JSON.stringify(next));
           fresh.meta.week   += 1;
           fresh.meta.updated = new Date().toISOString();
+          // Clear all weekly data — start fresh for new week
           fresh.search.innovations_week = 0;
           fresh.search.items = [];
           fresh.infra.done      = [];
@@ -75,6 +76,7 @@ jobs:
           fresh.pr.media_external = null;
           fresh.pr.community_new  = null;
           fresh.pr.cards          = [];
+          // Budget NOT cleared — nарастающий итог (не сбрасывается)
           fresh.pr.next_event     = null;
           // Active pilots start each week fresh — clear done/plan/artifact/risks
           (fresh.pilots.active || []).forEach(p => {

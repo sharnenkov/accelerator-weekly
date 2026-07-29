@@ -544,9 +544,8 @@ export default async function handler(req, res) {
       conv.pendingPatch = { patch, confirmText };
       conv.editMode     = false;
 
-      // Add cleaned reply to history (without the raw PATCH block)
-      const historyReply = confirmText;
-      conv.messages.push({ role: 'assistant', content: historyReply });
+      // Add cleaned reply to history (without the raw PATCH block and dialogue)
+      conv.messages.push({ role: 'assistant', content: confirmText });
 
       const preview = previewPatch(patch, data);
       await tgSend(chatId,
