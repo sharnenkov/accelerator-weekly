@@ -58,7 +58,7 @@
   "meta": {
     "week": 31,
     "date": "27 июля 2026",
-    "updated": "2026-07-29T08:57:01.046Z"
+    "updated": "2026-07-29T09:06:10.309Z"
   },
   "budget": {
     "total": {
@@ -126,7 +126,8 @@
   "search": {
     "innovations_week": 0,
     "innovations_base": 163,
-    "items": []
+    "items": [],
+    "innovations_total": 171
   },
   "pilots": {
     "funnel": {
