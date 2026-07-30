@@ -354,7 +354,19 @@ function applyPatch(data, patch) {
       }
 
     } else if (key === 'vnd' && typeof val === 'object') {
-      if (val.items) d.vnd.items = [...(d.vnd.items || []), ...[].concat(val.items)];
+      if (val.items) {
+        const newItems = [].concat(val.items);
+        const updated = d.vnd.items || [];
+        newItems.forEach(newItem => {
+          const idx = updated.findIndex(i => i.name === newItem.name);
+          if (idx >= 0) {
+            updated[idx] = { ...updated[idx], ...newItem };
+          } else {
+            updated.push(newItem);
+          }
+        });
+        d.vnd.items = updated;
+      }
       for (const [f, v] of Object.entries(val)) {
         if (f !== 'items') d.vnd[f] = v;
       }
