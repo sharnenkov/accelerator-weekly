@@ -497,13 +497,13 @@ function renderBudget(d) {
     <div class="sec-label">Всего бюджет</div>
     <div class="btotal-n">${fmtNum(t.budget)} млн</div>
     <div class="stat2" style="margin-bottom:20px">
-      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
-        <div class="stat2-n" style="flex-shrink:0;font-size:36px;line-height:1;color:var(--coral)">${fmtNum(t.spent)}</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.3">млн потрачено<br>${fmtNum(t.spent_pct)}%</div>
+      <div class="stat2-card" data-s="0" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="stat2-n" style="font-size:36px;line-height:1;color:var(--coral)">${fmtNum(t.spent)}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.3;text-align:center">млн потрачено<br>${fmtNum(t.spent_pct)}%</div>
       </div>
-      <div class="stat2-card" data-s="0" style="display:flex;align-items:center;justify-content:center;gap:14px">
-        <div class="stat2-n" style="flex-shrink:0;font-size:36px;line-height:1">${fmtNum(t.remaining)}</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.3">млн остаток<br>${fmtNum(t.remaining_pct)}%</div>
+      <div class="stat2-card" data-s="0" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="stat2-n" style="font-size:36px;line-height:1">${fmtNum(t.remaining)}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.3;text-align:center">млн остаток<br>${fmtNum(t.remaining_pct)}%</div>
       </div>
     </div>
     ${catBlock('CAPEX', b.capex, 'var(--coral)')}
