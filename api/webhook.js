@@ -321,12 +321,17 @@ function applyPatch(data, patch) {
 
     if (key === 'pilots' && typeof val === 'object') {
       for (const [listKey, listPatch] of Object.entries(val)) {
-        if (!listPatch.find || !listPatch.update) continue;
+        if (!listPatch.find || !listPatch.update) {
+          console.log('[PATCH] Skipping invalid patch:', listKey, listPatch);
+          continue;
+        }
         const list = d.pilots[listKey];
         const idx = list.findIndex(p => p.id === listPatch.find || p.name.includes(listPatch.find));
+        console.log('[PATCH] Pilot search:', listPatch.find, '-> idx:', idx, 'in', listKey);
         if (idx < 0) continue;
         const pilot = list[idx];
         const isSet = !!listPatch['$set'];
+        console.log('[PATCH] Found pilot:', pilot.id, 'updating fields:', Object.keys(listPatch.update));
 
         for (const [field, newVal] of Object.entries(listPatch.update)) {
           if (isSet) {
@@ -534,6 +539,8 @@ export default async function handler(req, res) {
     if (isSave) {
       const { patch, confirmText } = conv.pendingPatch;
       const newData = applyPatch(data, patch);
+      console.log('[PATCH] Applied patch, checking pilots.control[0]:', newData.pilots?.control?.[1]);
+      console.log('[PATCH] Original data pilots.control[0]:', data.pilots?.control?.[1]);
       const ok = await putDataJson(newData, dataSha, `feat: update via bot — ${confirmText}`);
       conv.pendingPatch = null;
       conv.editMode = false;
