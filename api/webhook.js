@@ -177,8 +177,8 @@ function previewPatch(patch, data) {
 
 function systemPrompt(data, firstName, extraNote) {
   const pilots = [
-    ...data.pilots.active.map(p => `[активный] ${p.id} · ${p.name} (${p.stage})`),
-    ...data.pilots.control.map(p => `[контроль] ${p.id} · ${p.name} (${p.stage})`),
+    ...data.pilots.active.map(p => `[активный] ${p.id} · ${p.name} (${p.stage}) — Ответственный: ${p.owner}`),
+    ...data.pilots.control.map(p => `[контроль] ${p.id} · ${p.name} (${p.stage}) — Ответственный: ${p.owner}`),
   ].join('\n');
 
   const userLine = firstName ? `Собеседник: ${firstName}. Обращайся по имени в ответах.` : '';
