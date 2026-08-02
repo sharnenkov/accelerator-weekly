@@ -58,21 +58,33 @@ async function getDataJson() {
 
 async function putDataJson(data, sha, commitMsg) {
   const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
-  console.log('[PUT] Saving to GitHub:', DATA_FILE, 'SHA:', sha?.substring(0, 8));
+  console.log('[PUT] Saving to GitHub:', DATA_FILE, 'SHA:', sha?.substring(0, 8), 'Message:', commitMsg);
   const res = await fetch(
     `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}`,
     {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ message: commitMsg, content, sha }),
     }
   );
   const result = await res.json();
   console.log('[PUT] Response status:', res.status, 'ok:', res.ok);
   if (!res.ok) {
-    console.log('[PUT] Error response:', JSON.stringify(result));
+    console.log('[PUT] Error:', JSON.stringify(result));
+    // Log to errors file for inspection
+    const errorLog = {
+      timestamp: new Date().toISOString(),
+      status: res.status,
+      error: result.message || result.error,
+      details: result
+    };
+    console.error('[PUT_ERROR]', errorLog);
   } else {
-    console.log('[PUT] Success! New commit:', result.commit?.message);
+    console.log('[PUT] Success! Commit SHA:', result.commit?.sha?.substring(0, 8));
   }
   return res.ok;
 }
@@ -636,7 +648,7 @@ export default async function handler(req, res) {
       const preview = previewPatch(patch, data);
       await tgSend(chatId,
         `📋 <b>Проверьте перед сохранением:</b>\n\n${preview}\n\n` +
-        `<b>Записать это? Ответьте <b>да</b> или <b>изменить</b></b>`
+        `Записать это? Ответьте <b>ДА</b> или <i>изменить</i>`
       );
     } catch (err) {
       await tgSend(chatId, `❌ Ошибка при разборе патча: ${err.message}`);
