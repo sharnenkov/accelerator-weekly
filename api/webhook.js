@@ -1,10 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
 
+// Force fresh deployment - version marker
+const WEBHOOK_VERSION = '2024-08-02-aggressive-fix';
+
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
 const GITHUB_TOKEN   = process.env.GITHUB_TOKEN;
 const GITHUB_REPO    = 'sharnenkov/accelerator-weekly';
 const DATA_FILE      = 'data-new.json';
+
+console.log('[INIT] Webhook version:', WEBHOOK_VERSION, 'Using file:', DATA_FILE);
 
 const ALLOWED_IDS = (process.env.ALLOWED_TELEGRAM_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 
