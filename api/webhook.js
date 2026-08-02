@@ -32,13 +32,17 @@ async function tgSend(chatId, text, opts = {}) {
 // ── GitHub helpers ────────────────────────────────────────────────────────────
 
 async function getDataJson() {
+  // Aggressive cache busting - include timestamp AND random value
+  const cacheBreaker = `${Date.now()}_${Math.random()}`;
   const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}?t=${Date.now()}`,
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}?cb=${cacheBreaker}`,
     {
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`,
         Accept: 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     }
   );
