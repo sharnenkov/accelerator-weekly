@@ -667,6 +667,15 @@ function renderPilots(d) {
   const activePilots = activePilotsFull;
   const controlPilots = controlPilotsFull;
 
+  // Sort pilots by ID number (АИ.П26.01, АИ.П26.02, ...)
+  const sortByPilotNum = (a, b) => {
+    const numA = parseInt(a.id.split('.').pop());
+    const numB = parseInt(b.id.split('.').pop());
+    return numA - numB;
+  };
+  activePilots.sort(sortByPilotNum);
+  controlPilots.sort(sortByPilotNum);
+
   if (IS_NEW && showTabs && activePilots.length === 0) {
     html += `<div style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">Пока нет обновлений по пилотам</div>`;
   }
