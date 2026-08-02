@@ -374,14 +374,18 @@ function applyPatch(data, patch) {
           if (isSet) {
             // Explicit overwrite (edit/correction mode)
             pilot[field] = newVal;
+          } else if (listKey === 'control') {
+            // Control pilots: replace, not accumulate (per systemPrompt: "if changes exist")
+            pilot[field] = newVal;
           } else if (field === 'done' && typeof newVal === 'string') {
-            // First update this week for active pilots: clear inherited artifact
-            if (listKey === 'active' && !pilot.done) {
+            // Active pilots: accumulate done
+            // First update this week: clear inherited artifact
+            if (!pilot.done) {
               pilot.artifact = '';
             }
             pilot.done = appendStr(pilot.done, newVal);
           } else if ((field === 'artifact' || field === 'plan' || field === 'risks') && typeof newVal === 'string') {
-            // These fields accumulate through the week
+            // Active pilots: accumulate these fields through the week
             pilot[field] = appendStr(pilot[field], newVal);
           } else {
             // owner, stage, etc — replace
