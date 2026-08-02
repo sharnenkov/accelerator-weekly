@@ -250,7 +250,8 @@ ${userLine}
 · Заполняй по ходу недели, не откладывай на пятницу — бот всегда под рукой
 · «Что сделано» — конкретное действие (встреча, решение, отправка), не статус
 · Артефакт — осязаемый результат: документ, ссылка, таблица, письмо
-· Если артефакта нет — скажи «/skip», бот не будет переспрашивать
+· Если артефакта нет — скажи «/skip» или просто не упоминай, бот не будет переспрашивать
+· Риски / блокеры — если их нет, скажи "рисков нет" или "без рисков", это будет зафиксировано
 
 ━━━ ТЕКУЩИЕ ДАННЫЕ (Н${data.meta.week}) ━━━
 Поиск: ${data.search.innovations_week} инноваций на неделе, ${data.search.innovations_base} в базе
@@ -612,13 +613,13 @@ export default async function handler(req, res) {
       conv.pendingPatch = { patch, confirmText };
       conv.editMode     = false;
 
-      // Add cleaned reply to history (without the raw PATCH block and dialogue)
-      conv.messages.push({ role: 'assistant', content: confirmText });
+      // Add to history (store raw response for context)
+      conv.messages.push({ role: 'assistant', content: claudeReply });
 
       const preview = previewPatch(patch, data);
       await tgSend(chatId,
         `📋 <b>Проверьте перед сохранением:</b>\n\n${preview}\n\n` +
-        `<i>Ответьте <b>да</b> — сохранить, <b>изменить</b> — скорректировать текст</i>`
+        `<b>Записать это? Ответьте <b>да</b> или <b>изменить</b></b>`
       );
     } catch (err) {
       await tgSend(chatId, `❌ Ошибка при разборе патча: ${err.message}`);
