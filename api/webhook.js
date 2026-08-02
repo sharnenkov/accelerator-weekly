@@ -53,6 +53,7 @@ async function getDataJson() {
 
 async function putDataJson(data, sha, commitMsg) {
   const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
+  console.log('[PUT] Saving to GitHub:', DATA_FILE, 'SHA:', sha?.substring(0, 8));
   const res = await fetch(
     `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}`,
     {
@@ -61,6 +62,13 @@ async function putDataJson(data, sha, commitMsg) {
       body: JSON.stringify({ message: commitMsg, content, sha }),
     }
   );
+  const result = await res.json();
+  console.log('[PUT] Response status:', res.status, 'ok:', res.ok);
+  if (!res.ok) {
+    console.log('[PUT] Error response:', JSON.stringify(result));
+  } else {
+    console.log('[PUT] Success! New commit:', result.commit?.message);
+  }
   return res.ok;
 }
 
