@@ -850,9 +850,9 @@ function renderPR(d) {
 
 async function loadData() {
   const file = IS_NEW ? 'data-new.json' : 'data.json';
-  // Force fresh data: bypass GitHub CDN caching by using unique timestamp + no-cache headers
-  const url = `https://raw.githubusercontent.com/sharnenkov/accelerator-weekly/main/${file}?t=${Date.now()}`;
-  const res = await fetch(url, { cache: 'no-store', headers: { 'Pragma': 'no-cache' } });
+  // Use Vercel API route to bypass CORS issues with GitHub raw.githubusercontent.com
+  const url = `/api/data?file=${file}&t=${Date.now()}`;
+  const res = await fetch(url, { cache: 'no-store' });
   const d = await res.json();
 
   document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
