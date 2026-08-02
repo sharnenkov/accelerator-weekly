@@ -652,7 +652,7 @@ export default async function handler(req, res) {
       const preview = previewPatch(patch, data);
       await tgSend(chatId,
         `📋 <b>Проверьте перед сохранением:</b>\n\n${preview}\n\n` +
-        `Записать это? Ответьте <b>ДА</b> или <i>изменить</i>`
+        `Записать это? Ответьте <b>ДА</b> или <b>ИЗМЕНИТЬ</b>`
       );
     } catch (err) {
       await tgSend(chatId, `❌ Ошибка при разборе патча: ${err.message}`);
