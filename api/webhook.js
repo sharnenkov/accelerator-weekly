@@ -33,8 +33,14 @@ async function tgSend(chatId, text, opts = {}) {
 
 async function getDataJson() {
   const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}`,
-    { headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' } }
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/${DATA_FILE}?t=${Date.now()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache'
+      }
+    }
   );
   const meta = await res.json();
   const content = Buffer.from(meta.content, 'base64').toString('utf8');
