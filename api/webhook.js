@@ -357,11 +357,22 @@ function applyPatch(data, patch) {
       if (val.items) {
         const newItems = [].concat(val.items);
         const updated = d.vnd.items || [];
+        const normalize = (name) => name.replace(/^ВНД:\s*/, '').trim();
         newItems.forEach(newItem => {
-          const idx = updated.findIndex(i => i.name === newItem.name);
+          const normalizedNew = normalize(newItem.name);
+          const idx = updated.findIndex(i => normalize(i.name) === normalizedNew);
           if (idx >= 0) {
-            updated[idx] = { ...updated[idx], ...newItem };
+            // Merge: keep "ВНД:" prefix, merge fields
+            const normalized = { ...updated[idx], ...newItem };
+            if (!normalized.name.startsWith('ВНД:')) {
+              normalized.name = 'ВНД: ' + normalized.name.replace(/^ВНД:\s*/, '').trim();
+            }
+            updated[idx] = normalized;
           } else {
+            // New item: ensure "ВНД:" prefix
+            if (!newItem.name.startsWith('ВНД:')) {
+              newItem.name = 'ВНД: ' + newItem.name.trim();
+            }
             updated.push(newItem);
           }
         });
