@@ -425,6 +425,23 @@ function applyPatch(data, patch) {
 const SAVE_WORDS  = ['да', 'ок', 'ok', '+', '👍', 'yes', 'сохранить', 'ладно', 'записать', 'верно', 'правильно', 'отправляй', 'отправить'];
 const EDIT_WORDS  = ['изменить', 'нет', 'исправить', 'правка', 'отмена', 'cancel', 'edit', 'не то', 'неверно'];
 
+// Flexible confirmation detection - looks for keywords in text, not exact match
+function isSaveConfirm(text) {
+  const lc = text.toLowerCase().trim();
+  // Exact match (quick)
+  if (SAVE_WORDS.some(w => lc === w)) return true;
+  // Substring match (flexible) - catches variations like "отправляй!", "ок,спасибо" etc
+  const savePatterns = ['да', 'ок', 'отправ', 'сохран', 'записа', 'верно', 'правильно'];
+  return savePatterns.some(p => lc.includes(p));
+}
+
+function isEditConfirm(text) {
+  const lc = text.toLowerCase().trim();
+  if (EDIT_WORDS.some(w => lc === w)) return true;
+  const editPatterns = ['изменить', 'исправить', 'правка', 'отмена', 'не то', 'ошибка'];
+  return editPatterns.some(p => lc.includes(p));
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(200).json({ ok: true });
 
@@ -488,8 +505,8 @@ export default async function handler(req, res) {
 
   // ── Handle pending /msg confirmation ─────────────────────────────────────
   if (conv.pendingMsg) {
-    const isSave = SAVE_WORDS.some(w => lc === w);
-    const isEdit = EDIT_WORDS.some(w => lc === w);
+    const isSave = isSaveConfirm(cleanText || text);
+    const isEdit = isEditConfirm(cleanText || text);
     if (isSave) {
       const { targetChatId, msgText } = conv.pendingMsg;
       conv.pendingMsg = null;
@@ -506,8 +523,8 @@ export default async function handler(req, res) {
 
   // ── Handle pending confirmation ───────────────────────────────────────────
   if (conv.pendingPatch) {
-    const isSave = SAVE_WORDS.some(w => lc === w);
-    const isEdit = EDIT_WORDS.some(w => lc === w);
+    const isSave = isSaveConfirm(cleanText || text);
+    const isEdit = isEditConfirm(cleanText || text);
 
     if (isSave) {
       const { patch, confirmText } = conv.pendingPatch;
