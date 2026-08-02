@@ -261,7 +261,9 @@ ${pilots}
 
 Когда пользователь хочет внести обновление:
 1. Уточни если неясно — какой раздел, какой пилот
-2. Спроси про артефакт (если не упомянул). /skip — пропустить.
+2. Спроси про данные ТОЛЬКО если их нет:
+   · Артефакт (если не упомянул) — /skip можно пропустить
+   · Ответственный (owner) — ТОЛЬКО если его нет в пилоте или неизвестен
 3. Верни патч в строгом формате:
 
 PATCH:
@@ -605,9 +607,16 @@ export default async function handler(req, res) {
       await tgSend(chatId, `❌ Ошибка при разборе патча: ${err.message}`);
     }
   } else {
-    // Regular conversation — send Claude reply as-is
+    // Regular conversation — remove PATCH blocks before sending (user doesn't need to see code)
+    const cleanReply = claudeReply
+      .replace(/PATCH:\s*```json[\s\S]*?```\s*/g, '')
+      .replace(/CONFIRM:[\s\S]*$/g, '')
+      .trim();
+
     conv.messages.push({ role: 'assistant', content: claudeReply });
-    await tgSend(chatId, claudeReply);
+    if (cleanReply) {
+      await tgSend(chatId, cleanReply);
+    }
   }
 
   await saveState(conversations, stateSha);
