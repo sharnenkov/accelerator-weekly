@@ -850,8 +850,9 @@ function renderPR(d) {
 
 async function loadData() {
   const file = IS_NEW ? 'data-new.json' : 'data.json';
+  // Force fresh data: bypass GitHub CDN caching by using unique timestamp + no-cache headers
   const url = `https://raw.githubusercontent.com/sharnenkov/accelerator-weekly/main/${file}?t=${Date.now()}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: 'no-store', headers: { 'Pragma': 'no-cache' } });
   const d = await res.json();
 
   document.getElementById('wtag').textContent = fmtWeekTag(d.meta.week, d.meta.date);
