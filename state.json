@@ -24,9 +24,24 @@
       {
         "role": "assistant",
         "content": "✅ Получилось! Создаю патч:\n\nPATCH:\n```json\n{\n  \"pilots\": {\n    \"active\": {\n      \"find\": \"АИ.П26.22\",\n      \"update\": {\n        \"done\": \"06.06 — HOLST настройка по завершена\",\n        \"plan\": \"Определение тестовой группы, организация доступов\"\n      }\n    }\n  }\n}\n```\n\nCONFIRM: Обновлён пилот <b>АИ.П26.22</b> — добавлены: выполненное на неделе и план на следующую ⚡"
+      },
+      {
+        "role": "user",
+        "content": "Внеси информацию что на сегодняшний день 176 инновационных решений в базе"
+      },
+      {
+        "role": "assistant",
+        "content": "✅ Получилось! Создаю патч:\n\nPATCH:\n```json\n{\n  \"search\": {\n    \"innovations_total\": 176\n  }\n}\n```\n\nCONFIRM: Обновлен счётчик инноваций в базе — <b>176</b> решений 📊"
       }
     ],
-    "pendingPatch": null,
+    "pendingPatch": {
+      "patch": {
+        "search": {
+          "innovations_total": 176
+        }
+      },
+      "confirmText": "Обновлен счётчик инноваций в базе — <b>176</b> решений 📊"
+    },
     "editMode": false
   },
   "732508798": {
