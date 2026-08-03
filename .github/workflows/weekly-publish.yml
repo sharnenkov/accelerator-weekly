@@ -47,13 +47,15 @@ jobs:
             });
           });
 
-          // 3. Move active pilots without done → control before promoting
-          const withDone    = next.pilots.active.filter(p => p.done);
-          const withoutDone = next.pilots.active.filter(p => !p.done);
-          const toControl   = withoutDone.map(({done, ...p}) => p);
-          next.pilots.active  = withDone;
-          next.pilots.control = [...toControl, ...next.pilots.control];
-          console.log('Moved to control: ' + toControl.map(p => p.id).join(', '));
+          // 3. Re-sort ALL pilots by week data: if done/plan/risks → active, else → control
+          const allPilots = [...next.pilots.active, ...next.pilots.control];
+          const hasWeekData = p => !!(p.done || p.plan || p.risks);
+          const activePilots = allPilots.filter(p => hasWeekData(p));
+          const controlPilots = allPilots.filter(p => !hasWeekData(p));
+          next.pilots.active = activePilots;
+          next.pilots.control = controlPilots;
+          console.log('Active pilots: ' + activePilots.map(p => p.id).join(', '));
+          console.log('Control pilots: ' + controlPilots.map(p => p.id).join(', '));
 
           // 4. Promote data-new → data.json
           fs.writeFileSync('data.json', JSON.stringify(next, null, 2));
