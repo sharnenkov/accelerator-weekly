@@ -58,7 +58,7 @@
   "meta": {
     "week": 32,
     "date": "27 июля 2026",
-    "updated": "2026-08-04T07:54:03.625Z"
+    "updated": "2026-08-04T07:57:45.163Z"
   },
   "budget": {
     "total": {
@@ -436,7 +436,7 @@
     "focus": "",
     "media_internal": null,
     "media_external": null,
-    "community_new": null,
+    "community_new": 1,
     "community_total": 105,
     "cards": [],
     "next_event": null
