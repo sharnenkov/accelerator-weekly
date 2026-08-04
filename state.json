@@ -62,9 +62,24 @@
       {
         "role": "assistant",
         "content": "Алексей, понял — заменяю \"Венгер\" на \"вендор\". 🔄\n\nPATCH:\n```json\n{\n  \"pilots\": {\n    \"control\": {\n      \"find\": \"АИ.П26.02\",\n      \"$set\": true,\n      \"update\": {\n        \"done\": \"07.07 — Встреча с вендором (Yandex), переданы результаты тестирования Alisa Pro для анализа\",\n        \"artifact\": \"Комментарии Yandex к результатам пилота\"\n      }\n    }\n  }\n}\n```\n\nCONFIRM: <b>АИ.П26.02</b> — исправлено \"Венгер\" → \"вендор\" ✅"
+      },
+      {
+        "role": "user",
+        "content": "В сообществе 105 участников"
+      },
+      {
+        "role": "assistant",
+        "content": "Алексей, понял — обновляю количество участников сообщества ЦИР на Ньютоне. 📊\n\nPATCH:\n```json\n{\n  \"pr\": {\n    \"community_total\": 105\n  }\n}\n```\n\nCONFIRM: Сообщество ЦИР — <b>105 участников</b> ✅"
       }
     ],
-    "pendingPatch": null,
+    "pendingPatch": {
+      "patch": {
+        "pr": {
+          "community_total": 105
+        }
+      },
+      "confirmText": "Сообщество ЦИР — <b>105 участников</b> ✅"
+    },
     "editMode": false
   },
   "790608360": {
