@@ -1,4 +1,4 @@
-const Anthropic = require('@anthropic-ai/sdk').default;
+import Anthropic from '@anthropic-ai/sdk';
 
 // Force fresh deployment - version marker
 const WEBHOOK_VERSION = '2024-08-02-aggressive-fix';
@@ -565,7 +565,7 @@ function isEditConfirm(text) {
   return editPatterns.some(p => lc.includes(p));
 }
 
-async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     console.log('[WEBHOOK] Request received, method:', req.method);
     console.log('[ENV] TELEGRAM_TOKEN:', TELEGRAM_TOKEN ? 'SET' : 'MISSING');
@@ -755,5 +755,3 @@ async function handler(req, res) {
     return res.status(500).json({ error: 'Webhook error: ' + err.message });
   }
 }
-
-module.exports = handler;
