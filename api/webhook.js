@@ -566,7 +566,13 @@ function isEditConfirm(text) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(200).json({ ok: true });
+  try {
+    console.log('[WEBHOOK] Request received, method:', req.method);
+    console.log('[ENV] TELEGRAM_TOKEN:', TELEGRAM_TOKEN ? 'SET' : 'MISSING');
+    console.log('[ENV] ANTHROPIC_KEY:', ANTHROPIC_KEY ? 'SET' : 'MISSING');
+    console.log('[ENV] GITHUB_TOKEN:', GITHUB_TOKEN ? 'SET' : 'MISSING');
+
+    if (req.method !== 'POST') return res.status(200).json({ ok: true });
 
   const update = req.body;
   const msg = update?.message;
@@ -742,6 +748,10 @@ export default async function handler(req, res) {
     }
   }
 
-  await saveState(conversations, stateSha);
-  return res.status(200).json({ ok: true });
+    await saveState(conversations, stateSha);
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('[WEBHOOK_ERROR]', err.message, err.stack);
+    return res.status(500).json({ error: 'Webhook error: ' + err.message });
+  }
 }
