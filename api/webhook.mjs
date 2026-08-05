@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 // Force fresh deployment - version marker
-const WEBHOOK_VERSION = '2026-08-05-classification-fix';
+const WEBHOOK_VERSION = '2026-08-05-logging-enhanced';
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
@@ -678,10 +678,12 @@ export default async function handler(req, res) {
 
     if (isSave) {
       const { patch, confirmText } = conv.pendingPatch;
+      console.log('[SAVE] User said yes to patch:', JSON.stringify(patch));
       const newData = applyPatch(data, patch);
-      console.log('[PATCH] Applied patch, checking pilots.control[0]:', newData.pilots?.control?.[1]);
-      console.log('[PATCH] Original data pilots.control[0]:', data.pilots?.control?.[1]);
+      console.log('[SAVE] Patched data ready, data-new.json size:', JSON.stringify(newData).length);
+      console.log('[SAVE] Current SHA:', dataSha?.substring(0, 8));
       const ok = await putDataJson(newData, dataSha, `feat: update via bot — ${confirmText}`);
+      console.log('[SAVE] putDataJson returned:', ok);
       conv.pendingPatch = null;
       conv.editMode = false;
       if (ok) {
