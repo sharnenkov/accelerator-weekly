@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 // Force fresh deployment - version marker
-const WEBHOOK_VERSION = '2026-08-05-logging-enhanced';
+const WEBHOOK_VERSION = '2026-08-05-edit-confirm-strict';
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
@@ -581,9 +581,14 @@ function isSaveConfirm(text) {
 
 function isEditConfirm(text) {
   const lc = text.toLowerCase().trim();
+  // Exact match first (safest)
   if (EDIT_WORDS.some(w => lc === w)) return true;
-  const editPatterns = ['изменить', 'исправить', 'правка', 'отмена', 'не то', 'ошибка'];
-  return editPatterns.some(p => lc.includes(p));
+  // Only match if "изменить" or "исправить" is first word or standalone
+  if (lc.startsWith('изменить ') || lc.startsWith('изменить,') || lc.startsWith('изменить!')) return true;
+  if (lc.startsWith('исправить ') || lc.startsWith('исправить,') || lc.startsWith('исправить!')) return true;
+  if (lc.startsWith('отмена ') || lc.startsWith('отмена,') || lc.startsWith('отмена!')) return true;
+  if (lc === 'нет' || lc.startsWith('нет ')) return true;
+  return false;
 }
 
 export default async function handler(req, res) {
