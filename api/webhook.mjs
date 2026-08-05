@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 // Force fresh deployment - version marker
-const WEBHOOK_VERSION = '2024-08-02-aggressive-fix';
+const WEBHOOK_VERSION = '2026-08-05-classification-fix';
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
