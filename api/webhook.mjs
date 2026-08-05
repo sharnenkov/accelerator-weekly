@@ -215,6 +215,11 @@ function previewPatch(patch, data) {
 // ── Claude system prompt ──────────────────────────────────────────────────────
 
 function systemPrompt(data, firstName, extraNote) {
+  // Get current date in Moscow timezone (DD.MM format)
+  const now = new Date();
+  const mskDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+  const todayDate = String(mskDate.getDate()).padStart(2, '0') + '.' + String(mskDate.getMonth() + 1).padStart(2, '0');
+
   const pilots = [
     ...data.pilots.active.map(p => `[активный] ${p.id} · ${p.name} (${p.stage}) — Ответственный: ${p.owner}`),
     ...data.pilots.control.map(p => `[контроль] ${p.id} · ${p.name} (${p.stage}) — Ответственный: ${p.owner}`),
@@ -327,9 +332,9 @@ ${pilots}
 Данные НАКАПЛИВАЮТСЯ внутри недели:
 · Поля "done" и "artifact" у активных пилотов — дописываются через " · "
 · Массивы infra.done, infra.artifacts, search.items, pr.cards, vnd.items — пополняются
-· ⚠️ ВАЖНО: Начинай новую запись с ТЕКУЩЕЙ ДАТЫ (не 05.08, а реальная дата дня):
-  Если сегодня 02 августа → "05.08 — текст"
-  Если сегодня 27 июля → "05.08 — текст"
+· ⚠️ ВАЖНО: Начинай новую запись с ТЕКУЩЕЙ ДАТЫ - ${todayDate}:
+  Формат: "${todayDate} — описание текста"
+  Пример: "${todayDate} — Проведена встреча с командой"
 · Разные люди могут вносить данные по одному пилоту в разные дни — всё сохранится
 
 Когда пользователь хочет внести обновление:
