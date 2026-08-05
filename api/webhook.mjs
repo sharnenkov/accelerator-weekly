@@ -551,11 +551,16 @@ const EDIT_WORDS  = ['изменить', 'нет', 'исправить', 'пра
 // Flexible confirmation detection - looks for keywords in text, not exact match
 function isSaveConfirm(text) {
   const lc = text.toLowerCase().trim();
-  // Exact match (quick)
+  // Exact match first (safest)
   if (SAVE_WORDS.some(w => lc === w)) return true;
-  // Substring match (flexible) - catches variations like "отправляй!", "ок,спасибо" etc
-  const savePatterns = ['да', 'ок', 'отправ', 'сохран', 'записа', 'верно', 'правильно'];
-  return savePatterns.some(p => lc.includes(p));
+  // Only match if "да" is first word or standalone
+  if (lc === 'да') return true;
+  if (lc.startsWith('да ') || lc.startsWith('да,') || lc.startsWith('да!')) return true;
+  // Allow short "ok" variants
+  if (lc === 'ок' || lc === 'окей' || lc === 'ok') return true;
+  // Allow "записать" only if it's the main word
+  if (lc === 'записать' || lc === 'сохранить' || lc === 'отправить') return true;
+  return false;
 }
 
 function isEditConfirm(text) {
