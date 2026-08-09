@@ -116,17 +116,17 @@
       {
         "role": "assistant",
         "content": "Понял, Надежда! Обновляю базу на 180 решений.\n\nPATCH:\n```json\n{\n  \"search\": {\n    \"innovations_base\": 180,\n    \"innovations_total\": 180\n  }\n}\n```\nCONFIRM: Поиск — обновлена база на 180 решений\n\nПодтверждаешь? <b>ДА</b> / <b>ИЗМЕНИТЬ</b>"
+      },
+      {
+        "role": "user",
+        "content": "Покажи текущий дашборд"
+      },
+      {
+        "role": "assistant",
+        "content": "📊 <b>Текущий дашборд (WIP)</b> на Н32:\n\n👉 https://accelerator-weekly-new.vercel.app\n\nЭто живой дашборд, который обновляется в реальном времени по мере внесения данных через бота. Здесь видны все обновления, которые мы вносим на протяжении недели.\n\nКаждый понедельник в 06:00 МСК эти данные автоматически переходят в <b>опубликованный дашборд</b> (факт прошлой недели):\n👉 https://accelerator-weekly.vercel.app\n\nХочешь обновить что-то ещё?"
       }
     ],
-    "pendingPatch": {
-      "patch": {
-        "search": {
-          "innovations_base": 180,
-          "innovations_total": 180
-        }
-      },
-      "confirmText": "Поиск — обновлена база на 180 решений"
-    },
+    "pendingPatch": null,
     "editMode": false
   }
 }
