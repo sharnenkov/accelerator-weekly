@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Акселератор инноваций — Еженедельный журнал</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue: #001868;
+  --orange: #FF4D1A;
+  --white: #FFFFFF;
+  --gray-light: #F5F7FF;
+  --gray-neutral: #F8F8F9;
+  --gray-border: #E4E8F5;
+  --gray-text: #464e5d;
+  --gray-mid: #C7D9FF;
+  --green: #2B8919;
+  --text: #1A1A1A;
+}
+
+html {
+  font-size: clamp(14px, 2.5vmin, 27px);
+}
+
+html, body {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Verdana, sans-serif;
+  background: #DCE0EC;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+html, body {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body { margin: 0; overflow-y: auto; }
+
+/* ===== PAGE: locked to viewport, no scroll ===== */
+.page {
+  width: 100%;
+  max-width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 3.2rem 4rem;
+  background: var(--white);
+  position: relative;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.page.cover {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ===== COVER HERO (front page only) ===== */
+.cover-hero {
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-hero .cover-date,
+.cover-hero .cover-title,
+.cover-hero .cover-sub {
+  position: relative;
+  z-index: 2;
+}
+
+.cover-hero .cover-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cover-hero .cover-sub { text-align: left; }
+
+.cover-rule {
+  width: 4rem;
+  height: 0.22rem;
+  background: var(--orange);
+  margin: 1.4rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-marks {
+  position: absolute;
+  top: -5rem;
+  right: -6rem;
+  width: 34rem;
+  height: 34rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* three diamonds forming a rightward ">" — forward motion, each with a fading trail */
+.cover-arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  width: 22rem;
+  height: 18rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ar-trail {
+  position: absolute;
+  border-radius: 999px;
+}
+
+.ar-diamond {
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 0.28rem;
+}
+
+.ar-top .ar-diamond { left: 13rem; top: 4rem; width: 3.2rem; height: 3.2rem; background: var(--blue); }
+.ar-top .ar-trail { left: 9.8rem; top: 4rem; width: 6.4rem; height: 0.26rem; transform: translate(-50%, -50%); background: linear-gradient(to right, transparent 0%, var(--blue) 66%, var(--blue) 100%); }
+
+.ar-tip .ar-diamond { left: 18rem; top: 9rem; width: 4.6rem; height: 4.6rem; background: var(--orange); }
+.ar-diamond-qr { overflow: hidden; padding: 0.6rem; }
+.ar-diamond-qr img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0.12rem; }
+.ar-tip .ar-trail { left: 13.4rem; top: 9rem; width: 9.2rem; height: 0.36rem; transform: translate(-50%, -50%); background: linear-gradient(to right, transparent 0%, var(--orange) 66%, var(--orange) 100%); }
+
+.ar-bottom .ar-diamond { left: 13.6rem; top: 13.4rem; width: 2.6rem; height: 2.6rem; background: var(--gray-mid); }
+.ar-bottom .ar-trail { left: 11rem; top: 13.4rem; width: 5.2rem; height: 0.2rem; transform: translate(-50%, -50%); background: linear-gradient(to right, transparent 0%, var(--gray-mid) 66%, var(--gray-mid) 100%); }
+
+.cm { position: absolute; border-radius: 14%; transform: rotate(45deg); }
+.cm-1 { width: 22rem; height: 22rem; top: 2rem; left: 2rem; border: 0.16rem solid var(--gray-border); }
+.cm-2 { width: 13rem; height: 13rem; top: 8rem; left: 8rem; background: var(--blue); opacity: 0.06; }
+.cm-3 { width: 7rem; height: 7rem; top: 14rem; left: 14rem; background: var(--orange); }
+.cm-4 { width: 3.2rem; height: 3.2rem; top: 17.4rem; left: 17.4rem; background: var(--blue); }
+
+/* superscript version badge next to title */
+.cover-sup {
+  position: relative;
+  top: -1.9rem;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--orange);
+  transform: rotate(45deg);
+  border-radius: 0.2rem;
+  margin-left: 0.5rem;
+}
+
+.cover-sup span {
+  display: block;
+  transform: translate(0px, 1px) rotate(-45deg);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--white);
+}
+
+/* three-tone progress-style stripe, diamond marker like our chart bars */
+.cover-stripe {
+  display: flex;
+  width: 8rem;
+  height: 0.35rem;
+  margin: 1.4rem 0 1.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-stripe span { flex: 1; }
+.cover-stripe span:nth-child(1) { background: var(--blue); border-radius: 0.15rem 0 0 0.15rem; }
+.cover-stripe span:nth-child(2) { background: var(--orange); }
+.cover-stripe span:nth-child(3) { background: var(--gray-border); }
+
+.cover-stripe::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 0.9rem;
+  height: 2px;
+  background: var(--blue);
+  transform: translateY(-50%);
+}
+
+.cover-stripe::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: 0.9rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--blue);
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 0.1rem;
+}
+
+.page + .page { margin-top: 2px; }
+
+/* ===== MASTHEAD / SECTION HEADER ===== */
+.section-header {
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 0.16rem solid var(--blue);
+  flex-shrink: 0;
+}
+
+.section-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.section-header-subtitle {
+  font-size: 0.62rem;
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.cover-date {
+  font-size: 0.85rem;
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+
+.cover-title {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin-bottom: 1.6rem;
+}
+
+.cover-sub {
+  font-size: 0.95rem;
+  color: var(--gray-text);
+  line-height: 1.7;
+  max-width: 32rem;
+}
+
+/* ===== BYLINE ===== */
+.byline {
+  position: absolute;
+  bottom: 2rem;
+  right: 4rem;
+  font-size: 0.62rem;
+  color: var(--gray-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.byline strong { color: var(--orange); font-weight: 600; }
+
+.page-num {
+  position: absolute;
+  bottom: 2rem;
+  left: 4rem;
+  font-size: 0.62rem;
+  color: var(--gray-text);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.folio {
+  position: absolute;
+  top: 3.2rem;
+  right: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-text);
+}
+
+.folio-diamond { color: var(--orange); font-size: 0.68rem; line-height: 1; }
+
+.stat-card.current {
+  background: var(--blue);
+}
+
+.stat-card.current .stat-value { color: var(--white); }
+.stat-card.current .stat-label { color: rgba(255, 255, 255, 0.75); }
+
+.stat-card.done {
+  background: var(--orange);
+}
+
+.stat-card.done .stat-value { color: var(--white); }
+.stat-card.done .stat-label { color: rgba(255, 255, 255, 0.75); }
+
+/* ===== LAYOUT HELPERS ===== */
+.body-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 3rem; flex: 1; min-height: 0; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.2rem; flex: 1; min-height: 0; }
+
+p { font-size: 0.85rem; line-height: 1.6; color: var(--gray-text); }
+p strong { color: var(--text); font-weight: 600; }
+
+/* ===== HIGHLIGHT BOX ===== */
+.highlight-box {
+  background: var(--gray-light);
+  border-left: 0.22rem solid var(--orange);
+  padding: 1.1rem 1.3rem;
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+}
+
+.highlight-box .number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.highlight-box .label {
+  font-size: 0.62rem;
+  color: var(--gray-text);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+/* ===== STAT CARDS ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+
+.stat-card {
+  background: var(--gray-light);
+  padding: 0.9rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.stat-value { font-size: 1.7rem; font-weight: 700; color: var(--blue); line-height: 1; }
+.stat-label { font-size: 0.55rem; color: var(--gray-text); text-transform: uppercase; font-weight: 600; letter-spacing: 0.08em; margin-top: 0.3rem; }
+
+/* ===== LISTS ===== */
+.list-items { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.list-item {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--gray-text);
+  line-height: 1.5;
+}
+
+.list-item::before { content: "◆"; color: var(--orange); font-size: 0.55em; flex-shrink: 0; margin-top: 0.35em; }
+.list-item strong { color: var(--text); font-weight: 600; }
+
+.list-items.numbered { counter-reset: list-num; }
+.list-items.numbered .list-item { counter-increment: list-num; align-items: baseline; }
+.list-items.numbered .list-item::before {
+  content: counter(list-num) ".";
+  font-size: 0.82em;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+.list-columns { display: flex; gap: 1.8rem; counter-reset: list-num; flex: 1; min-height: 0; }
+.list-columns .list-items { display: block; flex: 1; }
+.list-columns .list-item {
+  counter-increment: list-num;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+.list-columns .list-item::before {
+  content: counter(list-num) ".";
+  color: var(--orange);
+  font-size: 0.82em;
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+.list-columns .list-item strong { font-size: 0.82rem; }
+.list-columns .list-item .li-desc {
+  display: block;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--gray-text);
+  margin-top: 0.15rem;
+}
+
+/* ===== STATUS TABLE (label / description, aligned) ===== */
+.status-table { display: flex; flex-direction: column; gap: 0.65rem; }
+
+.status-row {
+  display: grid;
+  grid-template-columns: 6.4rem 1fr;
+  gap: 0.8rem;
+  align-items: start;
+}
+
+.status-row .s-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1.4;
+}
+
+.status-row .s-desc {
+  font-size: 0.78rem;
+  color: var(--gray-text);
+  line-height: 1.5;
+}
+
+/* ===== PIPELINE ===== */
+.pipeline-container { display: flex; gap: 1rem; flex: 1; min-height: 0; }
+
+.pipeline-stage {
+  flex: 1;
+  background: var(--gray-light);
+  border-top: 0.22rem solid var(--orange);
+  padding: 0.7rem;
+  border-radius: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.pipeline-stage-title {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+}
+
+.pi-empty {
+  font-size: 0.62rem;
+  color: var(--gray-text);
+  font-style: italic;
+}
+
+.pipeline-item {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-left: 0.18rem solid var(--orange);
+  border-radius: 0.15rem;
+  padding: 0.3rem 0.45rem;
+}
+
+.pipeline-stage-wide { flex: 2; }
+
+.pipeline-item.pi-done {
+  background: #FFF3EC;
+  border-color: #FFD9C4;
+  border-left-color: var(--orange);
+}
+
+.pi-head, .pt-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.pi-head .pi-name, .pt-head .pt-name { flex: 1; min-width: 0; }
+.pi-head .dept-tag, .pt-head .dept-tag { flex-shrink: 0; }
+
+.pipeline-item .pi-name {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.pipeline-item .pi-meta {
+  font-size: 0.5rem;
+  font-weight: 500;
+  color: var(--gray-text);
+  margin-top: 0.12rem;
+  line-height: 1.3;
+}
+
+.pipeline-item .pi-goal {
+  font-size: 0.5rem;
+  color: var(--text);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--gray-border);
+}
+
+.pipeline-item.pi-new {
+  border-left-color: var(--blue);
+}
+
+.pipeline-item.pi-new .pi-name::before {
+  content: "NEW";
+  display: inline-block;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 0.42rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.08rem 0.25rem;
+  border-radius: 0.1rem;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+
+/* Confluence-style colored department tags */
+.dept-tag {
+  display: inline-block;
+  padding: 0.04rem 0.3rem;
+  border-radius: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+.dept-tag { font-size: 0.72em; }
+
+.dept-blue { background: #E6EEFC; color: var(--blue); }
+.dept-red { background: #FDEAEA; color: #B42318; }
+.dept-amber { background: #FFF6DC; color: #8A6100; }
+.dept-teal { background: #E3F6F5; color: #0F6E68; }
+.dept-orange { background: #FFEDE6; color: #B23A0F; }
+.dept-purple { background: #F1E9FB; color: #5B2C91; }
+.dept-green { background: #E8F7EE; color: #1D6B34; }
+.dept-gray { background: #F0F1F3; color: var(--gray-text); }
+
+/* ===== CONTROL / SUMMARY PAGE (pilots pt.2) ===== */
+.control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; min-height: 0; margin-bottom: 1rem; }
+
+.control-col {
+  display: flex;
+  flex-direction: column;
+  padding-right: 1.6rem;
+}
+
+.control-col.right {
+  padding-right: 0;
+  padding-left: 1.6rem;
+  border-left: 1px solid var(--gray-border);
+}
+
+.tile-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.3rem; align-content: start; }
+
+.pilot-tile {
+  background: var(--gray-light);
+  border-radius: 0.2rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.pilot-tile.pt-done { background: #FFF3EC; }
+
+.pilot-tile .pt-name { font-size: 0.64rem; font-weight: 700; color: var(--blue); }
+.pilot-tile .pt-meta { font-size: 0.52rem; color: var(--gray-text); margin-top: 0.12rem; line-height: 1.3; }
+.pilot-tile .pt-next { font-size: 0.6rem; color: var(--text); margin-top: 0.3rem; line-height: 1.4; }
+.pilot-tile .pt-next strong { color: var(--orange); font-weight: 700; }
+
+.bottom-summary {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 0.14rem solid var(--blue);
+}
+
+/* ===== COLUMN ITEM ===== */
+.accent-card {
+  position: relative;
+  background: var(--gray-light);
+  margin: -5px;
+  padding: 5px calc(1rem + 5px) calc(0.9rem + 5px);
+  border-radius: 0.2rem;
+}
+.accent-card.plain { margin: 0; padding: 0.9rem 1rem; }
+.accent-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.22rem;
+  background: var(--orange);
+  border-radius: 0.2rem 0.2rem 0 0;
+}
+
+.column-item h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 0.9rem;
+  padding-top: 0.35rem;
+  border-bottom: 0.14rem solid var(--orange);
+  padding-bottom: 0.5rem;
+}
+
+/* ===== TOC ===== */
+.toc-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 1.1rem; flex: 1; min-height: 0; }
+
+.toc-item {
+  background: var(--gray-light);
+  border-radius: 0.3rem;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.toc-item:hover { background: var(--gray-border); }
+
+.toc-item::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 0.22rem;
+  background: var(--orange);
+}
+
+/* checkerboard: 4 cols × 2 rows, alternating tone */
+.toc-item:nth-child(2), .toc-item:nth-child(4),
+.toc-item:nth-child(5), .toc-item:nth-child(7) {
+  background: var(--gray-neutral);
+}
+
+.toc-num {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--orange);
+  transform: rotate(45deg);
+  border-radius: 0.2rem;
+}
+
+.toc-num span {
+  display: block;
+  transform: rotate(-45deg);
+  font-size: 0.58rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+
+.toc-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.toc-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1.15;
+}
+
+.toc-stat {
+  font-size: 0.72rem;
+  color: var(--gray-text);
+  font-weight: 500;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--gray-border);
+}
+
+.toc-stat strong { color: var(--blue); font-weight: 700; }
+
+/* ===== PROGRESS BAR ===== */
+.progress-row { margin-bottom: 1.1rem; }
+.progress-row-label { font-size: 0.68rem; font-weight: 600; color: var(--blue); margin-bottom: 0.35rem; }
+.progress-bar { height: 1.1rem; background: var(--gray-light); border-radius: 0.2rem; }
+.progress-fill {
+  height: 100%;
+  position: relative;
+  background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 100%);
+  border-radius: 0.2rem;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 0.9rem;
+  color: var(--white); font-weight: 700; font-size: 0.6rem;
+}
+.progress-fill::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 0.9rem;
+  height: 2px;
+  background: var(--blue);
+  transform: translateY(-50%);
+}
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: 0.9rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: var(--blue);
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 0.1rem;
+}
+.progress-note { font-size: 0.62rem; color: var(--gray-text); margin-top: 0.3rem; }
+
+.progress-bar.lg { height: 1.7rem; }
+.progress-bar.lg .progress-fill { font-size: 0.68rem; }
+
+.progress-bar.tbd {
+  background: repeating-linear-gradient(45deg, var(--gray-light), var(--gray-light) 6px, var(--gray-border) 6px, var(--gray-border) 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-bar.tbd span {
+  color: var(--gray-text);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+/* ===== IMAGE PLACEHOLDER ===== */
+.img-block {
+  background: linear-gradient(135deg, var(--blue) 0%, #1c2f7a 100%);
+  border-radius: 0.4rem;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.img-block.photo { background: none; padding: 0; }
+
+.img-block img { width: 100%; height: 100%; object-fit: contain; border-radius: 0.4rem; }
+
+/* ===== MINI ROADMAP (3-step status) ===== */
+.roadmap-mini { display: flex; align-items: flex-start; margin-top: 1rem; flex-shrink: 0; }
+
+.roadmap-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.roadmap-diamond {
+  position: relative;
+  z-index: 2;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--white);
+  border: 0.14rem solid var(--gray-border);
+  transform: rotate(45deg);
+  border-radius: 0.12rem;
+  margin-bottom: 0.55rem;
+}
+
+.roadmap-step.done .roadmap-diamond { background: var(--blue); border-color: var(--blue); }
+.roadmap-step.current .roadmap-diamond { background: var(--orange); border-color: var(--orange); }
+
+.roadmap-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0.35rem;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--gray-border);
+}
+
+.roadmap-step.done:not(:last-child)::after { background: var(--blue); }
+
+.roadmap-label { font-size: 0.66rem; font-weight: 700; color: var(--blue); }
+.roadmap-step.pending .roadmap-label { color: var(--gray-text); }
+.roadmap-sub { font-size: 0.56rem; color: var(--gray-text); margin-top: 0.2rem; }
+
+.finance-tile {
+  background: var(--gray-light);
+  border-radius: 0.25rem;
+  padding: 0.9rem 1.1rem;
+}
+.finance-tile .flabel { font-size: 0.58rem; color: var(--orange); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.finance-tile .fvalue { font-size: 1.8rem; font-weight: 700; color: var(--blue); line-height: 1; margin-bottom: 0.3rem; }
+.finance-tile .fdesc { font-size: 0.68rem; color: var(--gray-text); line-height: 1.4; }
+
+.qr-box { width: 5.5rem; height: 5.5rem; background: var(--gray-light); border-radius: 0.25rem; padding: 0.4rem; }
+.qr-box img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ===== PRINT ===== */
+@page { size: 297mm 210mm; margin: 0; }
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html { font-size: 15.5px; }
+
+  html, body {
+    background: white;
+    width: 297mm;
+    height: auto;
+    overflow: visible;
+  }
+
+  .page {
+    width: 297mm;
+    height: 210mm;
+    overflow: hidden;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+
+  .page:last-child { page-break-after: auto; }
+
+  .page + .page { margin-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1: COVER -->
+<div class="page cover cover-hero">
+  <div class="cover-arrow" aria-hidden="true">
+    <div class="ar-top"><div class="ar-trail"></div><div class="ar-diamond"></div></div>
+    <div class="ar-tip"><div class="ar-trail"></div><a href="https://accelerator-mobile-report.vercel.app/" style="display:block;"><div class="ar-diamond ar-diamond-qr"><img src="QR_cover_diamond.png" alt="QR — мобильная версия отчёта"></div></a></div>
+    <div class="ar-bottom"><div class="ar-trail"></div><div class="ar-diamond"></div></div>
+  </div>
+  <div class="cover-date"><span class="folio-diamond">◆</span>Еженедельный отчёт</div>
+  <h1 class="cover-title">Акселератор<span class="cover-sup"><span>2</span></span><br>инноваций</h1>
+  <div class="cover-stripe"><span></span><span></span><span></span></div>
+  <p class="cover-sub">Итоги пилота Selvery, прототип автоматизации поиска инновационных решений и новая среда CDS — в фокусе прошедшей недели</p>
+  <div class="byline"><strong>31 августа 2026</strong></div>
+</div>
+
+<!-- 2: HIGHLIGHT -->
+<div class="page">
+  <div class="folio"><span class="folio-diamond">◆</span>Хайлайты</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">маркетинг · главное на неделе</span>
+    <h1>Акселератора инноваций ПСБ — лендинг на сайте Банка</h1>
+  </div>
+  <div class="grid-2" style="grid-template-columns: 1fr 1.9fr;">
+    <div class="body-area">
+      <p style="font-size: 0.95rem; color: var(--text); font-weight: 600; margin-bottom: 0.9rem;">Команда маркетинга подготовила макет посадочной страницы «Акселератор инноваций ПСБ» на сайте банка — теперь любая компания может подать заявку на пилот напрямую, без входящих писем и нетворкинга.</p>
+
+      <div class="highlight-box">
+        <div class="number">До 500 000 ₽</div>
+        <div class="label">Компенсация расходов поставщика на пилот</div>
+      </div>
+
+      <p style="margin-top: 1rem;">На странице закрыт весь путь заявителя: критерии отбора, 12 приоритетных категорий решений, пять этапов пилота и форма заявки с FAQ.</p>
+    </div>
+    <div class="body-area">
+      <div class="img-block photo" style="flex: none; aspect-ratio: 1640 / 878;"><img src="Screenshot_20260828_142654.png" alt="Лендинг Акселератора инноваций ПСБ"></div>
+      <div class="roadmap-mini">
+        <div class="roadmap-step done">
+          <div class="roadmap-diamond"></div>
+          <div class="roadmap-label">Пришёл макет</div>
+        </div>
+        <div class="roadmap-step current">
+          <div class="roadmap-diamond"></div>
+          <div class="roadmap-label">Согласование</div>
+          <div class="roadmap-sub">~1 неделя</div>
+        </div>
+        <div class="roadmap-step pending">
+          <div class="roadmap-diamond"></div>
+          <div class="roadmap-label">Финал</div>
+          <div class="roadmap-sub">Публикация сайта · дата уточняется</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="byline" style="right: auto; left: 4rem; bottom: 2.9rem;"><strong>Сухорукова, Гетманова</strong> — маркетинг</div>
+  <div class="page-num">02</div>
+</div>
+
+<!-- 2b: HIGHLIGHT — SELVERY PILOT RESULTS -->
+<div class="page">
+  <div class="folio"><span class="folio-diamond">◆</span>Хайлайты</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">пилоты · итог недели</span>
+    <h1>Пилот Selvery — рост конверсии продаж зарплатным клиентам</h1>
+  </div>
+  <div class="grid-2" style="grid-template-columns: 0.38fr 1fr; gap: 2rem;">
+    <div class="body-area">
+      <div class="img-block photo" style="aspect-ratio: 2440 / 2148;"><img src="Selvery_tablet.png" alt="Selvery — платформа для автоматизации продаж"></div>
+      <div style="text-align: center; margin-top: 0.6rem;"><a href="https://selvery.ru/" style="font-size: 0.62rem; color: var(--gray-text); text-transform: uppercase; letter-spacing: 0.06em; text-decoration: none; font-weight: 600;">selvery.ru ↗</a></div>
+    </div>
+    <div class="body-area">
+      <p style="font-size: 0.95rem; color: var(--text); font-weight: 600; margin-bottom: 0.9rem;">Завершён пилот Selvery — приложения, которое в моменте общения с клиентом подсказывает менеджеру, что сказать, показать или отправить, и автоматически логирует все действия для контроля.</p>
+
+      <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+        <div class="stat-card current"><div class="stat-value">×5</div><div class="stat-label">Прирост конверсии</div></div>
+        <div class="stat-card current"><div class="stat-value">10 → 50%</div><div class="stat-label">Конверсия из участников встречи в заявки</div></div>
+        <div class="stat-card current"><div class="stat-value">100%</div><div class="stat-label">Контроль групповых и личных встреч</div></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1; min-height: 0;">
+        <div class="accent-card plain">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem;">Выводы по результатам пилота</div>
+          <div class="list-items">
+            <div class="list-item">Гипотеза подтверждена: конверсия из участников встречи в заявки выросла с 10% до 50% (×5)</div>
+            <div class="list-item">Без инструмента контроля стандарт продаж не соблюдается — Selvery одновременно даёт методологию и контролирует её применение</div>
+          </div>
+        </div>
+        <div class="accent-card plain">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem;">Дальнейшие планы заказчика</div>
+          <p style="margin: 0;">Заключить договор на постоянное использование Selvery в контуре банка — внедрить стандарты продаж и обеспечить прозрачный контроль их исполнения.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Сухорукова</strong> — пилоты</div>
+  <div class="page-num">03</div>
+</div>
+
+<!-- 3: TOC -->
+<div class="page">
+  <div class="folio"><span class="folio-diamond">◆</span>Содержание</div>
+  <div class="section-header">
+    <h1>Содержание</h1>
+  </div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#concept">
+      <div class="toc-head"><span class="toc-num"><span>01</span></span><div class="toc-title">Концепция</div></div>
+      <div class="toc-stat">8 направлений <strong>развития</strong></div>
+    </a>
+    <a class="toc-item" href="#insights">
+      <div class="toc-head"><span class="toc-num"><span>02</span></span><div class="toc-title">Насмотренность</div></div>
+      <div class="toc-stat"><strong>200 / 300</strong> компаний в базе</div>
+    </a>
+    <a class="toc-item" href="#pilots">
+      <div class="toc-head"><span class="toc-num"><span>03</span></span><div class="toc-title">Пилоты</div></div>
+      <div class="toc-stat"><strong>28</strong> в конвейере разработки</div>
+    </a>
+    <a class="toc-item" href="#infra">
+      <div class="toc-head"><span class="toc-num"><span>04</span></span><div class="toc-title">Инфраструктура</div></div>
+      <div class="toc-stat">Модернизация <strong>2 стендов</strong></div>
+    </a>
+    <a class="toc-item" href="#pr">
+      <div class="toc-head"><span class="toc-num"><span>05</span></span><div class="toc-title">PR & Лидерство</div></div>
+      <div class="toc-stat"><strong>2.4K</strong> человек в сообществе</div>
+    </a>
+    <a class="toc-item" href="#cds">
+      <div class="toc-head"><span class="toc-num"><span>06</span></span><div class="toc-title">Среда CDS</div></div>
+      <div class="toc-stat">Роадмап к <strong>понедельнику</strong></div>
+    </a>
+    <a class="toc-item" href="#vnd">
+      <div class="toc-head"><span class="toc-num"><span>07</span></span><div class="toc-title">ВНД</div></div>
+      <div class="toc-stat">Финализация, <strong>встреча 28.08</strong></div>
+    </a>
+    <a class="toc-item" href="#finances">
+      <div class="toc-head"><span class="toc-num"><span>08</span></span><div class="toc-title">Финансы</div></div>
+      <div class="toc-stat">Бюджет 2027 — <strong>170 млн ₽</strong></div>
+    </a>
+  </div>
+  <div class="page-num">04</div>
+</div>
+
+<!-- 4: CONCEPT -->
+<div class="page" id="concept">
+  <div class="folio"><span class="folio-diamond">◆</span>Концепция</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">стратегическое направление</span>
+    <h1>Концепция АИ 2.0</h1>
+  </div>
+  <div class="grid-2" style="grid-template-columns: 1.7fr 1fr; gap: 2rem;">
+    <div class="body-area">
+      <p style="margin-bottom: 0.6rem; font-size: 0.78rem; color: var(--orange);">Концепция строится на трансформации неэффективных процессов, а также на создании новых направлений, релевантных актуальным вызовам.</p>
+      <div class="list-columns">
+        <div class="list-items">
+          <div class="list-item"><strong>База решений.</strong><div class="li-desc">Трансформация процесса — создание интеллектуализированной предиктивной базы. Финализация предложения.</div></div>
+          <div class="list-item"><strong>Пилоты.</strong><div class="li-desc">Трансформация процесса — актуальный подход для сохранения быстрых процессов и синергии с Центром ИИ. Финализация предложения.</div></div>
+          <div class="list-item"><strong>Инфраструктура.</strong><div class="li-desc">Трансформация: разделение контуров по задачам и максимальным возможностям. Финализация предложения.</div></div>
+          <div class="list-item"><strong>Среда CDS.</strong><div class="li-desc">Принято, в работе — подготовка переговоров с Центром ИИ по программе трансформации.</div></div>
+        </div>
+        <div class="list-items">
+          <div class="list-item"><strong>Венчурное направление.</strong><div class="li-desc">В работе — пилотный проект по созданию MVP экосистемы цифровых двойников.</div></div>
+          <div class="list-item"><strong>PR.</strong><div class="li-desc">Принято решение следовать пути лидера нового облика Акселератора инноваций, в работе.</div></div>
+          <div class="list-item"><strong>Финансовая модель.</strong><div class="li-desc">В работе.</div></div>
+          <div class="list-item"><strong>Дорожная карта.</strong><div class="li-desc">В работе.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="body-area" style="justify-content: flex-start; gap: 1.6rem;">
+      <div class="stats-grid" style="text-align: center;">
+        <div class="stat-card"><div class="stat-value">8</div><div class="stat-label">Направлений</div></div>
+        <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Трансформация</div></div>
+        <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Новых</div></div>
+        <div class="stat-card"><div class="stat-value">TBD</div><div class="stat-label">Согласовано</div></div>
+      </div>
+      <div class="highlight-box" style="margin: 0;">
+        <p style="margin: 0;">Каждое направление получает статус, ответственного и дедлайн — концепция управляется как единый портфель проектов, а не набор разрозненных инициатив</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="qr-box"></div>
+        <div style="font-size: 0.68rem; color: var(--gray-text); text-transform: uppercase; font-weight: 600; letter-spacing: 0.06em;">QR — открыть<br>концепцию АИ 2.0</div>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Шарненков, Спивакова</strong> — концепция</div>
+  <div class="page-num">05</div>
+</div>
+
+<!-- 5: INSIGHTS -->
+<div class="page" id="insights">
+  <div class="folio"><span class="folio-diamond">◆</span>Насмотренность</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">ключевые показатели</span>
+    <h1>Насмотренность: база решений</h1>
+  </div>
+  <div class="grid-2" style="grid-template-columns: 0.43fr 1fr; gap: 2rem;">
+    <div class="body-area">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">Прогресс по показателям</h3>
+      <div class="progress-row">
+        <div class="progress-row-label">Решений в базе за 2026 год</div>
+        <div class="progress-bar lg"><div class="progress-fill" style="width: 54%;">54%</div></div>
+        <div class="progress-note">163 из 300</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-row-label">Уникальных компаний из них</div>
+        <div class="progress-bar lg"><div class="progress-fill" style="width: 43%;">43%</div></div>
+        <div class="progress-note">130 из 300</div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns: 1fr; max-width: 14rem; margin-top: 0.8rem;">
+        <div class="stat-card current"><div class="stat-value">208</div><div class="stat-label">Всего решений в базе</div></div>
+      </div>
+    </div>
+    <div class="body-area">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">Автоматизированный мониторинг — прототип, который уже работает</h3>
+      <p style="margin-bottom: 0.6rem;">Цель — автоматизировать устаревший ручной процесс насмотренности и закрыть отставание в скорости пополнения базы решений. Монитор реестров ПО уже ежесуточно опрашивает каталог АРПП и сайты правообладателей, обогащает описания и раскладывает решения по подразделениям банка.</p>
+
+      <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-bottom: 0.6rem;">
+        <div class="stat-card current"><div class="stat-value">31 403</div><div class="stat-label">Записи реестра под наблюдением</div></div>
+        <div class="stat-card"><div class="stat-value">1 284</div><div class="stat-label">Отобрано как применимое в банке</div></div>
+        <div class="stat-card"><div class="stat-value">79%</div><div class="stat-label">Разложено по подразделениям</div></div>
+      </div>
+
+      <div class="highlight-box" style="margin: 0.7rem 0;">
+        <p style="margin: 0;"><strong>В очереди:</strong> 273 записи не привязаны к подразделению, ещё 403 — низкая уверенность отбора или мёртвый сайт. Реестр пополняется пакетами, не потоком — примерно на 200 решений в месяц</p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start; gap: 1.2rem;">
+        <div style="flex: 1;">
+          <h3 style="font-size: 0.85rem; font-weight: 700; color: var(--blue); margin-top: 0.3rem; margin-bottom: 0.35rem;">В планах</h3>
+          <div class="list-items" style="gap: 0.4rem;">
+            <div class="list-item">Подключение большего числа источников решений — госзакупки, релизы вендоров, отраслевые СМИ</div>
+            <div class="list-item">Интеллектуализированный анализ найденных решений — автоматическая оценка применимости и карточка решения с указанием источника</div>
+          </div>
+        </div>
+        <a href="https://reestr-monitor.vercel.app/" style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-decoration: none; margin-top: 0.3rem;">
+          <div class="qr-box" style="width: 4.4rem; height: 4.4rem; padding: 0.3rem;"><img src="QR_registry_monitor.png" alt="QR — открыть монитор реестров ПО"></div>
+          <div style="font-size: 0.56rem; color: var(--gray-text); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; text-align: center; line-height: 1.3;">Монитор реестров ПО<br>в реальном времени</div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Мудрая, Лебедев</strong> — насмотренность</div>
+  <div class="page-num">06</div>
+</div>
+
+<!-- 6: PILOTS PIPELINE -->
+<div class="page" id="pilots">
+  <div class="folio"><span class="folio-diamond">◆</span>Пилоты · Конвейер</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">конвейер пилотных проектов</span>
+    <h1>Пилоты: активные действия на неделе</h1>
+  </div>
+  <div class="body-area">
+    <div class="pipeline-container">
+      <div class="pipeline-stage">
+        <div class="pipeline-stage-title">Новые — вход в конвейер</div>
+        <div class="pipeline-item pi-new">
+          <div class="pi-head"><div class="pi-name">Аллокация продуктов</div><span class="dept-tag dept-amber">ПлатКарты</span></div>
+          <div class="pi-meta">Инициатор: Евтюхин И.С.</div>
+          <div class="pi-goal"><strong>Гипотеза:</strong> сократить сроки формирования отчётности по аллокации, высвободить ФТЕ на анализ качества. Система формирует отчётность в разных разрезах, анализирует данные, предлагает проверить расходы, проводит аудит драйверов аллокации на корректность.</div>
+        </div>
+        <div class="pipeline-item pi-new">
+          <div class="pi-head"><div class="pi-name">Сценарный анализ (3+1 вендора)</div><span class="dept-tag dept-green">Финансы</span></div>
+          <div class="pi-meta">Инициатор: Раев А.</div>
+          <div class="pi-goal"><strong>Гипотеза:</strong> ни один вендор не показал на демо нужный функционал — хотим, чтобы вендоры реализовали прототип ограниченной функциональности в своей инфраструктуре, чтобы Финблок (ФЭД, Казначейство) мог «пощупать и оценить» решения на планировании одного бизнеса.</div>
+        </div>
+      </div>
+      <div class="pipeline-stage pipeline-stage-wide">
+        <div class="pipeline-stage-title">Комплектация</div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№01 Банк идей (ОКФ)</div><span class="dept-tag dept-gray">КорпКультура</span></div>
+          <div class="pi-meta">финализируем ТЗ по итогам встречи с ЦИИ, готовим к 01.09</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№04 Поиск в файлах</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pi-meta">договор запущен в согласование с заказчиком</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№08 Анализ диалогов клиентов</div><span class="dept-tag dept-red">Взыскание</span></div>
+          <div class="pi-meta">датасет передан в Яндекс, ждём оценку объёма доработок</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№11 Риски в выдачах</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pi-meta">получены 3 КП от вендора, договор на согласовании после встречи 24.08</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№14 Консультант по залогам</div><span class="dept-tag dept-amber">Залоги</span></div>
+          <div class="pi-meta">уточнённое БТ на согласовании у заказчика</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№15 Помощник-эксперт СВА</div><span class="dept-tag dept-purple">СВА</span></div>
+          <div class="pi-meta">доработка БТ, интегратор прорабатывает с 20.08</div>
+        </div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№28 Агент Parswise</div><span class="dept-tag dept-blue">ЦифрРозница</span></div>
+          <div class="pi-meta">прорабатываем варианты оплаты, договор пока не согласован со стороны Панова И.</div>
+        </div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="pipeline-stage-title">Тестирование / Завершение</div>
+        <div class="pipeline-item">
+          <div class="pi-head"><div class="pi-name">№22 Holst (ЦИР)</div><span class="dept-tag dept-teal">ЦИР</span></div>
+          <div class="pi-meta">продлена лицензия, оформлены доступы, готовимся к тестированию</div>
+        </div>
+        <div class="pipeline-item pi-done">
+          <div class="pi-head"><div class="pi-name">№06 Код скриптов</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pi-meta">тестирование завершено, готовим итоговый отчёт</div>
+        </div>
+        <div class="pipeline-item pi-done">
+          <div class="pi-head"><div class="pi-name">№23 Инструмент ИИ-Офис</div><span class="dept-tag dept-teal">ЦИР</span></div>
+          <div class="pi-meta">формируем БТ на целевое решение</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Сухорукова, Мудрая</strong> — пилоты</div>
+  <div class="page-num">07</div>
+</div>
+
+<!-- 7: PILOTS ON CONTROL & SUMMARY -->
+<div class="page">
+  <div class="folio"><span class="folio-diamond">◆</span>Пилоты · Итог</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">контроль хода исполнения</span>
+    <h1>Пилоты: на контроле и итог</h1>
+  </div>
+  <div class="control-grid">
+    <div class="control-col">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 0.6rem;">На контроле</h3>
+      <div class="tile-list">
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№09 Банкротные дела ФЛ</div><span class="dept-tag dept-red">Взыскание</span></div>
+          <div class="pt-meta">пауза · ждём стоимость от К2</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№10 Презентации</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pt-meta">комплектация · старт теста 21.09</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№13 Карьерный сайт</div><span class="dept-tag dept-gray">Персонал</span></div>
+          <div class="pt-meta">тестирование · до 02.11</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№16 Поддержка розн. клиентов</div><span class="dept-tag dept-teal">ПроцессыРБ</span></div>
+          <div class="pt-meta">пауза · стоимость &gt;500к</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№25 Регистрация претензий</div><span class="dept-tag dept-teal">ПроцессыРБ</span></div>
+          <div class="pt-meta">пауза · нет активности на неделе</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№26 notCard</div><span class="dept-tag dept-blue">НекредРозница</span></div>
+          <div class="pt-meta">комплектация · ждём подписание вендором</div>
+        </div>
+        <div class="pilot-tile">
+          <div class="pt-head"><div class="pt-name">№27 Unadesk</div><span class="dept-tag dept-teal">ПроцессыРБ</span></div>
+          <div class="pt-meta">комплектация · подписание 1.09</div>
+        </div>
+      </div>
+    </div>
+    <div class="control-col right">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--orange); margin-bottom: 0.6rem;">Завершённые</h3>
+      <div class="tile-list">
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№02 Стажёр СВА ✓</div><span class="dept-tag dept-purple">СВА</span></div>
+          <div class="pt-meta">завершён в Мае 2026 года, гипотеза подтверждена</div>
+        </div>
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№03 Поиск в Базе знаний ✓</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pt-meta">завершён в Августе 2026 года, гипотеза подтверждена</div>
+        </div>
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№12 Воронки одобрения ✓</div><span class="dept-tag dept-blue">Розница</span></div>
+          <div class="pt-meta">завершён в Августе 2026 года, гипотеза подтверждена</div>
+        </div>
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№17 Судебная практика ✓</div><span class="dept-tag dept-purple">Юридический</span></div>
+          <div class="pt-meta">завершён в Августе 2026 года, гипотеза подтверждена</div>
+        </div>
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№19 Selvery ✓</div><span class="dept-tag dept-blue">РознПродажи</span></div>
+          <div class="pt-meta">завершён в Августе 2026 года, гипотеза подтверждена</div>
+        </div>
+        <div class="pilot-tile pt-done">
+          <div class="pt-head"><div class="pt-name">№20 СЭД «ТЕЗИС» ✓</div><span class="dept-tag dept-gray">КорпКультура</span></div>
+          <div class="pt-meta">завершён в Апреле 2026 года, гипотеза подтверждена</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-summary">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-value">28</div><div class="stat-label">В конвейере 2026 года</div></div>
+      <div class="stat-card current"><div class="stat-value">17</div><div class="stat-label">Активных</div></div>
+      <div class="stat-card done"><div class="stat-value">6</div><div class="stat-label">Завершено</div></div>
+      <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Отменённые</div></div>
+    </div>
+    <div class="stats-grid" style="margin-top: 0.6rem;">
+      <div class="stat-card"><div class="stat-value">13</div><div class="stat-label">Сейчас пилотов в Облаке</div></div>
+      <div class="stat-card"><div class="stat-value">TBD</div><div class="stat-label">Среднее время в облаке</div></div>
+      <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Сейчас пилотов в Контуре</div></div>
+      <div class="stat-card"><div class="stat-value">7 месяцев</div><div class="stat-label">Среднее время в контуре</div></div>
+    </div>
+  </div>
+  <div class="byline"><strong>Сухорукова, Мудрая</strong> — пилоты</div>
+  <div class="page-num">08</div>
+</div>
+
+<!-- 8: INFRASTRUCTURE -->
+<div class="page" id="infra">
+  <div class="folio"><span class="folio-diamond">◆</span>Инфраструктура</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">техническое обеспечение</span>
+    <h1>Инфраструктура</h1>
+  </div>
+  <div class="grid-2">
+    <div class="column-item body-area">
+      <h3>Модернизация стендов</h3>
+      <p style="margin-bottom: 0.8rem;">Зеркалирование тестового стенда платформы ИИ:</p>
+      <div class="list-items numbered">
+        <div class="list-item">Доработка КД и СС на песочницу ЦИР — в работе у Архитекторов</div>
+        <div class="list-item">Ожидание готовности тестового стенда ИИ платформы</div>
+      </div>
+      <div class="highlight-box">
+        <p style="margin: 0 0 0.5rem;"><strong>Зачем:</strong> тестовый стенд должен максимально повторять конфигурацию целевой платформы:</p>
+        <ul style="margin: 0; padding-left: 1.1rem; color: var(--gray-text); font-size: 0.85rem; line-height: 1.5;">
+          <li>CDS практикуются на облике целевой системы</li>
+          <li>прототипы решений по результатам проверок гипотез можно переносить на целевую платформу</li>
+        </ul>
+      </div>
+    </div>
+    <div class="column-item body-area">
+      <h3>Компетенции и персонал</h3>
+      <div class="list-items">
+        <div class="list-item">Отбор кандидатов на позицию «ИИ-инженера», проведение собеседований</div>
+      </div>
+      <div class="highlight-box">
+        <p style="margin: 0;"><strong>Зачем:</strong> для повышения скорости прототипирования решений для тестирования гипотез и сокращения затрат, при более эффективном процессе оплаты пилота</p>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Крыченкова, Никитин</strong> — инфраструктура</div>
+  <div class="page-num">09</div>
+</div>
+
+<!-- 9: PR -->
+<div class="page" id="pr">
+  <div class="folio"><span class="folio-diamond">◆</span>PR & Лидерство</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">коммуникации и влияние</span>
+    <h1>PR & Лидерство</h1>
+  </div>
+  <div class="grid-3">
+    <div class="column-item">
+      <h3>Минувшая неделя</h3>
+      <div class="list-items">
+        <div class="list-item">Новость об итогах пилота Selvery согласована и опубликована в сообществе ЦИР</div>
+        <div class="list-item">Статьи о пилотах (Selvery, ИИ-агенты) отправлены на согласование для Хабра</div>
+        <div class="list-item">Получен макет сайта Акселератора, отправлены комментарии по правкам</div>
+        <div class="list-item">Проанализированы критерии лидерства акселераторов</div>
+      </div>
+      <div class="highlight-box">
+        <p style="margin: 0;"><strong>Договорённость с Ньютоном</strong> о постоянной рубрике на главной странице</p>
+      </div>
+    </div>
+    <div class="column-item">
+      <div class="accent-card">
+        <h3 style="border-bottom-color: var(--blue);">Следующая неделя</h3>
+        <div class="list-items">
+          <div class="list-item">Статья о пользе акселераторов для банковской сферы в сообществе ЦИР</div>
+          <div class="list-item">Утверждение макета сайта с учётом правок и пожеланий</div>
+          <div class="list-item">Контент-план и форматы материалов для новой рубрики на Ньютоне</div>
+          <div class="list-item">Поиск креативных решений, анализ отличий проектов (стратегия)</div>
+          <div class="list-item">Анонс клуба цифровизаторов — выступление Акселератора инноваций</div>
+        </div>
+      </div>
+    </div>
+    <div class="column-item">
+      <h3>Статистика</h3>
+      <div class="stats-grid" style="grid-template-columns: 1fr; gap: 0.8rem;">
+        <div class="stat-card current"><div class="stat-value">146 участников</div><div class="stat-label">Сообщество ЦИР (+2 за неделю)</div></div>
+        <div class="stat-card"><div class="stat-value">TBD</div><div class="stat-label">Показатель популярности #1</div></div>
+        <div class="stat-card"><div class="stat-value">TBD</div><div class="stat-label">Показатель популярности #2</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Сухорукова, Гетманова</strong> — PR & лидерство</div>
+  <div class="page-num">10</div>
+</div>
+
+<!-- 10: CDS -->
+<div class="page" id="cds">
+  <div class="folio"><span class="folio-diamond">◆</span>Среда CDS</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">новое направление</span>
+    <h1>Среда CDS: трансформация мышления и практикум</h1>
+  </div>
+  <div class="grid-2">
+    <div class="body-area">
+      <p style="margin-bottom: 0.7rem;"><strong>Среда CDS</strong> — синергия с Центром ИИ: готовим Chief Data Scientists, способных сразу работать на целевой платформе банка.</p>
+      <p style="margin-bottom: 0.7rem;">Трансформация банка начинается с людей: CDS разных уровней подготовки (hard и soft skills) приходят к единому стандарту через смену мышления и практику в инфраструктуре Акселератора, релевантной стеку целевой платформы.</p>
+      <div class="highlight-box">
+        <p style="margin: 0;"><strong>Акцент:</strong> это не набор курсов, а смена мышления плюс практика в нашей инфраструктуре — CDS, прошедший обучение у нас, сразу готов к боевой системе</p>
+      </div>
+      <p style="margin-top: 0.7rem;">В глазах Центра ИИ CDS — ИТ-бизнес-партнёр на стыке бизнеса, ИИ и управления продуктом: понимает архитектуру платформы, умеет формулировать и тестировать гипотезы.</p>
+    </div>
+    <div class="body-area">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">Статус и план на неделю</h3>
+      <div class="highlight-box" style="margin-top: 0;">
+        <p style="margin: 0;">Рабочая встреча команды 26 августа — собрали черновую структуру программы и предварительные сроки, готовимся показать их Антону Стасенку (руководителю Центра ИИ)</p>
+      </div>
+      <div class="status-table" style="margin-top: 0.8rem;">
+        <div class="status-row"><div class="s-label">Структура</div><div class="s-desc">Трансформация мышления — фундаментальный блок, далее hard-skills: целевая платформа, ML и агенты, работа с гипотезами</div></div>
+        <div class="status-row"><div class="s-label">Длительность</div><div class="s-desc">2–4 месяца в зависимости от исходного уровня участника</div></div>
+        <div class="status-row"><div class="s-label">Разработка</div><div class="s-desc">Практикум и обучающего агента пишет сама команда — не отдаём Центру ИИ, чтобы сохранить наработки за собой</div></div>
+        <div class="status-row"><div class="s-label">Открытый вопрос</div><div class="s-desc">Нужен ли отдельный блок про архитектуру стека банка — выносим на обсуждение с Антоном Стасенком</div></div>
+      </div>
+      <p style="margin-top: 0.8rem; padding-top: 0.8rem; border-top: 0.14rem solid var(--blue); color: var(--orange); font-weight: 600;">На неделе: дорожная карта и проект-схема программы</p>
+    </div>
+  </div>
+  <div class="byline"><strong>Соколовская</strong> — среда CDS</div>
+  <div class="page-num">11</div>
+</div>
+
+<!-- 11: VND -->
+<div class="page" id="vnd">
+  <div class="folio"><span class="folio-diamond">◆</span>ВНД</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">нормативная документация</span>
+    <h1>ВНД: Порядок работы Акселератора инноваций</h1>
+  </div>
+  <div class="column-item body-area" style="justify-content: center; max-width: 42rem; width: 100%; margin: 0 auto; border: 1px solid var(--gray-border); border-radius: 0.4rem; padding: 2rem;">
+    <h3>Статус документа</h3>
+    <div class="list-items numbered">
+      <div class="list-item">Все замечания к документу согласованы</div>
+      <div class="list-item">Для утверждения (или отклонения) документа требуется проведение очного согласительного совещания</div>
+      <div class="list-item">Риски по необходимости выполнения процессов согласно принятому регламенту (в случае принятия ВНД) во время трансформации присутствуют</div>
+    </div>
+    <h3 style="margin-top: 1.8rem;">Предложение</h3>
+    <div class="highlight-box" style="margin: 0;">
+      <p style="margin: 0;">Обновить Методические указания прошлого года, перевыпустив документ на основе разработанного ВНД.</p>
+    </div>
+  </div>
+  <div class="byline"><strong>Лебедев</strong> — ВНД</div>
+  <div class="page-num">12</div>
+</div>
+
+<!-- 12: FINANCES -->
+<div class="page" id="finances">
+  <div class="folio"><span class="folio-diamond">◆</span>Финансы</div>
+  <div class="section-header">
+    <span class="section-header-subtitle">финансовое планирование</span>
+    <h1>Бюджет 2026–2027</h1>
+  </div>
+  <div class="grid-2">
+    <div class="body-area">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 1rem;">Бюджет 2026: освоение</h3>
+      <div class="progress-row">
+        <div class="progress-row-label">CAPEX 2026</div>
+        <div class="progress-bar lg tbd"><span>TBD</span></div>
+        <div class="progress-note">Данные уточняются</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-row-label">OPEX 2026</div>
+        <div class="progress-bar lg tbd"><span>TBD</span></div>
+        <div class="progress-note">Данные уточняются</div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-row-label">ФОТ 2026</div>
+        <div class="progress-bar lg tbd"><span>TBD</span></div>
+        <div class="progress-note">Данные уточняются</div>
+      </div>
+      <div class="highlight-box" style="margin-top: 0.8rem;">
+        <p style="margin: 0;"><strong>За неделю:</strong> 20 млн ₽ ФОТ передано в экономию</p>
+      </div>
+    </div>
+    <div class="body-area" style="gap: 0.7rem;">
+      <h3 style="font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 0.3rem;">Бюджет 2027: плановые объёмы</h3>
+      <div class="finance-tile">
+        <div class="flabel">CAPEX</div>
+        <div class="fvalue">43 млн</div>
+        <div class="fdesc">Инструменты автоматизации, облако, интеграции</div>
+      </div>
+      <div class="finance-tile">
+        <div class="flabel">OPEX</div>
+        <div class="fvalue">29 млн</div>
+        <div class="fdesc">Облако, токены API, пилоты, подрядчики</div>
+      </div>
+      <div class="finance-tile">
+        <div class="flabel">ФОТ</div>
+        <div class="fvalue">98 млн</div>
+        <div class="fdesc">Команда, компетенции, бонусы по КПИ</div>
+      </div>
+    </div>
+  </div>
+  <div class="byline"><strong>Шарненков, Спивакова</strong> — финансы</div>
+  <div class="page-num">13</div>
+</div>
+
+<!-- 13: CLOSING -->
+<div class="page cover">
+  <h2 style="font-size: 3.2rem; font-weight: 700; color: var(--blue); letter-spacing: -0.04em; margin-bottom: 1rem;">Спасибо за внимание</h2>
+  <p style="font-size: 0.85rem; color: var(--gray-text); margin-bottom: 3rem; max-width: 30rem;">Полная версия отчёта с интерактивными элементами и дашбордом в реальном времени — по QR-кодам ниже</p>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.7rem;">
+      <a href="https://accelerator-mobile-report.vercel.app/"><div class="qr-box" style="width: 6.5rem; height: 6.5rem;"><img src="QR_mobile_report.png" alt="QR — мобильная версия отчёта"></div></a>
+      <div style="font-size: 0.62rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em;">HTML-отчёт</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.7rem;">
+      <div class="qr-box" style="width: 6.5rem; height: 6.5rem;"></div>
+      <div style="font-size: 0.62rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em;">Дашборд</div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.7rem;">
+      <div class="qr-box" style="width: 6.5rem; height: 6.5rem;"></div>
+      <div style="font-size: 0.62rem; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em;">Граф знаний</div>
+    </div>
+  </div>
+  <div class="byline">© Акселератор инноваций, 2026</div>
+</div>
+
+</body>
+</html>
